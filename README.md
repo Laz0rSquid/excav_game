@@ -34,3 +34,6 @@ Bagger fährt in einem quadratischen Spielfeld mit X * Y Feldern (mögliche Löc
 * Visual Studio einrichten
 * Bitbucket-Client für Windows
 * Hitdetection recherchieren
+
+###Max:
+* Bilder ins Repository hochladen
