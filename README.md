@@ -1,5 +1,7 @@
 #Treasure Hunt mit Bagger (Vorläufige Auswahl, muss mit Dozent abgesprochen werden)
 
+Google Docs: https://docs.google.com/document/d/1ZUhn5pCLoTeIt0kH_rD-G-OytCOpMTLZMpA_ZxBSwZM/edit?usp=sharing
+
 Bagger fährt in einem quadratischen Spielfeld mit X * Y Feldern (mögliche Löcher, unsichtbare Grenze). Durch die Baggersteuerung kann nach Schätzen gegraben werden (insgesamt z Schatztruhen versteckt). Wird ein Schatz ausgegraben, spielt eine kurze Goldfontänenanimation
 
 ###Baggersteuerung:
