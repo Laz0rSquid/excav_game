@@ -318,6 +318,7 @@ int main(void)
 
 	glDeleteBuffers(1, &uvbuffer);
 	glDeleteTextures(1, &RobotTexture);
+	glDeleteTextures(2, &GrassTexture);
 
 	glDeleteProgram(programID);
 
