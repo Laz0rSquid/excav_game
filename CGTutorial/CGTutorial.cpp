@@ -268,10 +268,6 @@ int main(void)
 		// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
 		Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
 
-		//
-		//glm::vec3 lightPos = glm::vec3(4, 4, -4);
-		
-		
 		// Camera matrix
 		View = glm::lookAt(glm::vec3(3,6,-8), // Camera is at (0,0,-5), in World Space
 						   glm::vec3(0,0,0),  // and looks at the origin
@@ -308,14 +304,7 @@ int main(void)
 		// lamp position
 		glm::vec4 lightPos = Model * glm::vec4(0, 0.9, 0, 1);
 		glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
-
-
-		//Model = glm::translate(Model, glm::vec3(0.0, 0.9, 0.0));
 		
-
-		// drawWireCube() replaced with drawCube()
-		// drawCube();		
-
 		// Swap buffers
 		glfwSwapBuffers(window);
 
