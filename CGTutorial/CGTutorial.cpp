@@ -35,6 +35,17 @@ void error_callback(int error, const char* description)
 {
 	fputs(description, stderr);
 }
+// vehicle position
+float vehicleX = 0.0;
+float vehicleZ = 0.0;
+
+// max length of worldplane
+float maxRange = 6.0;
+
+// step length of vehicle
+float vehicleStepLength = 0.1;
+
+//needed later
 float angleX = 0.0;
 float angleY = 0.0;
 float angleZ = 0.0;
@@ -44,6 +55,7 @@ float joint1Z = 0.0;
 float joint2 = 0.0;
 float joint3 = 0.0;
 
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	switch (key)
@@ -52,46 +64,28 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		glfwSetWindowShouldClose(window, GL_TRUE);
 		break;
 	case GLFW_KEY_LEFT:
-		angleX -= 1.0;
+		if (vehicleX < maxRange)
+		{
+			vehicleX += vehicleStepLength;
+		}
 		break;
 	case GLFW_KEY_RIGHT:
-		angleX += 1.0;
+		if (vehicleX > -maxRange)
+		{
+			vehicleX -= vehicleStepLength;
+		}
 		break;
 	case GLFW_KEY_UP:
-		angleY += 1.0;
+		if (vehicleZ < maxRange)
+		{
+			vehicleZ += vehicleStepLength;
+		}
 		break;
 	case GLFW_KEY_DOWN:
-		angleY -= 1.0;
-		break;
-	case GLFW_KEY_O:
-		angleZ -= 1.0;
-		break;
-	case GLFW_KEY_L:
-		angleZ += 1.0;
-		break;
-	case GLFW_KEY_A:
-		joint1X -= 1.0;
-		break;
-	case GLFW_KEY_D:
-		joint1X += 1.0;
-		break;
-	case GLFW_KEY_W:
-		joint1Z += 1.0;
-		break;
-	case GLFW_KEY_S:
-		joint1Z -= 1.0;
-		break;
-	case GLFW_KEY_R:
-		joint2 += 1.0;
-		break;
-	case GLFW_KEY_F:
-		joint2 -= 1.0;
-		break;
-	case GLFW_KEY_T:
-		joint3 += 1.0;
-		break;
-	case GLFW_KEY_G:
-		joint3 -= 1.0;
+		if (vehicleZ > -maxRange)
+		{
+			vehicleZ -= vehicleStepLength;
+		}
 		break;
 	default:
 		break;
@@ -121,8 +115,8 @@ void sendMVP()
 void drawSegment(float h) {
 	glm::mat4 Save = Model;
 
-	Model = glm::translate(Model, glm::vec3(0.0, h * 0.5, 0.0));
-	Model = glm::scale(Model, glm::vec3(h * 0.15, h * 0.5, h * 0.15));
+	Model = glm::translate(Model, glm::vec3(vehicleX, h * 0.5, vehicleZ));
+	Model = glm::scale(Model, glm::vec3(h * 0.5, h * 0.5, h * 0.5));
 	sendMVP();
 	drawSphere(10, 10);
 	Model = Save;
@@ -130,25 +124,29 @@ void drawSegment(float h) {
 
 // draws coordinate system
 void drawCS() {
+	
 	glm::mat4 Save = Model;
 
 	// X axis
-	Model = glm::scale(Model, glm::vec3(5.0,0.01,0.01));
+	Model = glm::scale(Model, glm::vec3(maxRange,0.0,maxRange));
 	sendMVP();
 	drawCube();
 	Model = Save;
 
+	/*
 	// Z axis
 	Model = glm::scale(Model, glm::vec3(0.01, 5.0, 0.01));
 	sendMVP();
 	drawCube();
 	Model = Save;
-	
+	*/
+	/*
 	// Y axis
-	Model = glm::scale(Model, glm::vec3(0.01, 0.01, 5.0));
+	Model = glm::scale(Model, glm::vec3(0.01, 0.01, maxRange));
 	sendMVP();
 	drawCube();
 	Model = Save;
+	*/
 }
 
 
@@ -278,18 +276,19 @@ int main(void)
 		
 		
 		// Camera matrix
-		View = glm::lookAt(glm::vec3(0,0,-5), // Camera is at (0,0,-5), in World Space
+		View = glm::lookAt(glm::vec3(3,6,-8), // Camera is at (0,0,-5), in World Space
 						   glm::vec3(0,0,0),  // and looks at the origin
 						   glm::vec3(0,1,0)); // Head is up (set to 0,-1,0 to look upside-down)
 		
 		// Model matrix : an identity matrix (model will be at the origin)
 		Model = glm::mat4(1.0f);
 
+		/*
 		// rotates cube by angle on the y axis
 		Model = glm::rotate(Model, angleX, glm::vec3(0.0, 1.0, 0.0));
 		Model = glm::rotate(Model, angleY, glm::vec3(1.0, 0.0, 0.0));
 		Model = glm::rotate(Model, angleZ, glm::vec3(0.0, 0.0, 1.0));
-
+		*/
 		//
 		glm::mat4 Save = Model;
 		Model = glm::translate(Model, glm::vec3(1.5, 0.0, 0.0));
