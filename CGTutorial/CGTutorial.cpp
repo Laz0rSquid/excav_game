@@ -45,6 +45,9 @@ float maxRange = 6.0;
 // step length of vehicle
 float vehicleStepLength = 0.1;
 
+// model size
+float modelSize = 0.8;
+
 //needed later
 float angleX = 0.0;
 float angleY = 0.0;
@@ -64,25 +67,25 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		glfwSetWindowShouldClose(window, GL_TRUE);
 		break;
 	case GLFW_KEY_LEFT:
-		if (vehicleX < maxRange)
+		if (vehicleX < maxRange - modelSize)
 		{
 			vehicleX += vehicleStepLength;
 		}
 		break;
 	case GLFW_KEY_RIGHT:
-		if (vehicleX > -maxRange)
+		if (vehicleX > -maxRange + modelSize)
 		{
 			vehicleX -= vehicleStepLength;
 		}
 		break;
 	case GLFW_KEY_UP:
-		if (vehicleZ < maxRange)
+		if (vehicleZ < maxRange - modelSize)
 		{
 			vehicleZ += vehicleStepLength;
 		}
 		break;
 	case GLFW_KEY_DOWN:
-		if (vehicleZ > -maxRange)
+		if (vehicleZ > -maxRange + modelSize)
 		{
 			vehicleZ -= vehicleStepLength;
 		}
@@ -112,41 +115,27 @@ void sendMVP()
 	glUniformMatrix4fv(glGetUniformLocation(programID, "P"), 1, GL_FALSE, &Projection[0][0]);
 }
 
-void drawSegment(float h) {
+void drawModel(float size) {
 	glm::mat4 Save = Model;
 
-	Model = glm::translate(Model, glm::vec3(vehicleX, h * 0.5, vehicleZ));
-	Model = glm::scale(Model, glm::vec3(h * 0.5, h * 0.5, h * 0.5));
+	Model = glm::translate(Model, glm::vec3(vehicleX, size, vehicleZ));
+	Model = glm::scale(Model, glm::vec3(size, size, size));
 	sendMVP();
 	drawSphere(10, 10);
+	drawWireCube();
 	Model = Save;
 }
 
-// draws coordinate system
-void drawCS() {
+// draws plane
+void drawPlayfield() {
 	
 	glm::mat4 Save = Model;
 
-	// X axis
+	// plane
 	Model = glm::scale(Model, glm::vec3(maxRange,0.0,maxRange));
 	sendMVP();
 	drawCube();
 	Model = Save;
-
-	/*
-	// Z axis
-	Model = glm::scale(Model, glm::vec3(0.01, 5.0, 0.01));
-	sendMVP();
-	drawCube();
-	Model = Save;
-	*/
-	/*
-	// Y axis
-	Model = glm::scale(Model, glm::vec3(0.01, 0.01, maxRange));
-	sendMVP();
-	drawCube();
-	Model = Save;
-	*/
 }
 
 
@@ -253,14 +242,19 @@ int main(void)
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 	// Load the texture
-	GLuint Texture = loadBMP_custom("robot_texture.bmp");
+	GLuint RobotTexture = loadBMP_custom("robot_texture.bmp");
+	GLuint GrassTexture = loadBMP_custom("GrasTextureAlternative.bmp");
 
 	// Bind our texture in Texture Unit 0
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, Texture);
+	glBindTexture(GL_TEXTURE_2D, RobotTexture);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, GrassTexture);
+
 
 	// Set our "myTextureSampler" sampler to user Texture Unit 0
 	glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 0);
+	glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 1);
 
 	// Eventloop
 	while (!glfwWindowShouldClose(window))
@@ -301,10 +295,10 @@ int main(void)
 		sendMVP();
 		
 		// custom draw functions
-		drawCS();
+		drawPlayfield();
 		
-		// draw three arm segments
-		drawSegment(1.5f);
+		// draw model
+		drawModel(modelSize);
 
 		// lamp position
 		glm::vec4 lightPos = Model * glm::vec4(0, 0.9, 0, 1);
@@ -329,7 +323,7 @@ int main(void)
 	glDeleteBuffers(1, &normalbuffer);
 
 	glDeleteBuffers(1, &uvbuffer);
-	glDeleteTextures(1, &Texture);
+	glDeleteTextures(1, &RobotTexture);
 
 	glDeleteProgram(programID);
 
