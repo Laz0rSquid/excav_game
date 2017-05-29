@@ -245,16 +245,19 @@ int main(void)
 	GLuint RobotTexture = loadBMP_custom("robot_texture.bmp");
 	GLuint GrassTexture = loadBMP_custom("GrasTextureAlternative.bmp");
 
+	// make textures
+	//glGenTextures(1, &RobotTexture);
+	//glGenTextures(2, &GrassTexture);
+
 	// Bind our texture in Texture Unit 0
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0 + 1);
 	glBindTexture(GL_TEXTURE_2D, RobotTexture);
-	glActiveTexture(GL_TEXTURE1);
+	glActiveTexture(GL_TEXTURE0 + 2);
 	glBindTexture(GL_TEXTURE_2D, GrassTexture);
 
-
 	// Set our "myTextureSampler" sampler to user Texture Unit 0
-	glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 0);
-	glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 1);
+	//glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 0);
+	//glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 1);
 
 	// Eventloop
 	while (!glfwWindowShouldClose(window))
@@ -295,9 +298,11 @@ int main(void)
 		sendMVP();
 		
 		// custom draw functions
+		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 2);
 		drawPlayfield();
 		
 		// draw model
+		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 1);
 		drawModel(modelSize);
 
 		// lamp position
