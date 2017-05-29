@@ -295,12 +295,6 @@ int main(void)
 		Model = glm::translate(Model, glm::vec3(1.5, 0.0, 0.0));
 		//
 
-		// draws teapot - scale, send, draw
-		Model = glm::scale(Model, glm::vec3(1.0 / 1000.0, 1.0 / 1000.0, 1.0 / 1000.0));
-		sendMVP();
-
-		glBindVertexArray(VertexArrayIDTeapot);
-		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
 		//
 		Model = Save;
@@ -311,15 +305,7 @@ int main(void)
 		drawCS();
 		
 		// draw three arm segments
-		Model = glm::rotate(Model, joint1X, glm::vec3(0.0, 1.0, 0.0));
-		Model = glm::rotate(Model, joint1Z, glm::vec3(1.0, 0.0, 0.0));
 		drawSegment(1.5f);
-		Model = glm::translate(Model, glm::vec3(0.0, 1.5, 0.0));
-		Model = glm::rotate(Model, joint2, glm::vec3(1.0, 0.0, 0.0));
-		drawSegment(1.2f);
-		Model = glm::translate(Model, glm::vec3(0.0, 1.2, 0.0));
-		Model = glm::rotate(Model, joint3, glm::vec3(1.0, 0.0, 0.0));
-		drawSegment(0.9f);
 
 		// lamp position
 		glm::vec4 lightPos = Model * glm::vec4(0, 0.9, 0, 1);
