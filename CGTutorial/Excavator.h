@@ -5,8 +5,8 @@ public:
 	Excavator();
 	~Excavator();
 	void drawExcavator();
-	void setXPos(float);
-	void setZPos(float);
+	void setXPos(float x);
+	void setZPos(float z);
 	float getXPos();
 	float getZPos();
 

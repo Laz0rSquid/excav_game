@@ -315,6 +315,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CGTutorial.cpp" />
+    <ClCompile Include="Excavator.cpp" />
+    <ClCompile Include="MVP.cpp" />
     <ClCompile Include="objects.cpp" />
     <ClCompile Include="objloader.cpp" />
     <ClCompile Include="shader.cpp" />
@@ -323,6 +325,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Excavator.h" />
+    <ClInclude Include="MVP.h" />
     <ClInclude Include="objects.hpp" />
     <ClInclude Include="objloader.hpp" />
     <ClInclude Include="shader.hpp" />
