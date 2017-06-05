@@ -122,7 +122,6 @@ void drawModel(float size) {
 	Model = glm::scale(Model, glm::vec3(size, size, size));
 	sendMVP();
 	drawSphere(10, 10);
-	drawWireCube();
 	Model = Save;
 }
 
