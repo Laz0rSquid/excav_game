@@ -15,6 +15,6 @@ private:
 	float max;
 
 public:
-	void keyPress(GLFWwindow* window, int key, int scancode, int action, Excavator e);
+	void keyPress(GLFWwindow* window, int key, int scancode, int action, Excavator& e);
 };
 

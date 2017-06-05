@@ -87,66 +87,8 @@ float maxRange = 6.0;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	ctrls.keyPress(window, key, scancode, action,  excavator);
-	/*
-	switch (key)
-	{
-	case GLFW_KEY_ESCAPE:
-		glfwSetWindowShouldClose(window, GL_TRUE);
-		break;
-	case GLFW_KEY_LEFT:
-		if (vehicleX < maxRange - modelSize)
-		{
-			vehicleX += vehicleStepLength;
-		}
-		break;
-	case GLFW_KEY_RIGHT:
-		if (vehicleX > -maxRange + modelSize)
-		{
-			vehicleX -= vehicleStepLength;
-		}
-		break;
-	case GLFW_KEY_UP:
-		if (vehicleZ < maxRange - modelSize)
-		{
-			vehicleZ += vehicleStepLength;
-		}
-		break;
-	case GLFW_KEY_DOWN:
-		if (vehicleZ > -maxRange + modelSize)
-		{
-			vehicleZ -= vehicleStepLength;
-		}
-		break;
-	default:
-		break;
-	}
-	*/
+	ctrls.keyPress(window, key, scancode, action, excavator);
 }
-
-/*
-void sendMVP()
-{
-	// Our ModelViewProjection : multiplication of our 3 matrices
-	glm::mat4 MVP = Projection * View * Model; 
-	// Send our transformation to the currently bound shader, 
-	// in the "MVP" uniform, konstant fuer alle Eckpunkte
-	glUniformMatrix4fv(glGetUniformLocation(programID, "MVP"), 1, GL_FALSE, &MVP[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(programID, "M"), 1, GL_FALSE, &Model[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(programID, "V"), 1, GL_FALSE, &View[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(programID, "P"), 1, GL_FALSE, &Projection[0][0]);
-}
-
-void drawModel(float size) {
-	glm::mat4 Save = Model;
-
-	Model = glm::translate(Model, glm::vec3(vehicleX, size, vehicleZ));
-	Model = glm::scale(Model, glm::vec3(size, size, size));
-	sendMVP();
-	drawSphere(10, 10);
-	Model = Save;
-}
-*/
 
 
 // draws plane
@@ -281,18 +223,6 @@ int main(void)
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-		/*
-		// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-		Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
-
-		// Camera matrix
-		View = glm::lookAt(glm::vec3(3,6,-8), // Camera is at (0,0,-5), in World Space
-						   glm::vec3(0,0,0),  // and looks at the origin
-						   glm::vec3(0,1,0)); // Head is up (set to 0,-1,0 to look upside-down)
-		
-		// Model matrix : an identity matrix (model will be at the origin)
-		Model = glm::mat4(1.0f);
-		*/
 		MVP.setDefaultMVP();
 
 		/*
@@ -315,7 +245,6 @@ int main(void)
 		// draw model
 		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 1);
 		excavator.drawExcavator(MVP);
-		//drawModel(modelSize);
 
 		// lamp position
 		glm::vec4 lightPos = MVP.getModel() * glm::vec4(0, 0.9, 0, 1);

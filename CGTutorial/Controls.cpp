@@ -15,7 +15,7 @@ Controls::~Controls()
 {
 }
 
-void Controls::keyPress(GLFWwindow* window, int key, int scancode, int action, Excavator e) {
+void Controls::keyPress(GLFWwindow* window, int key, int scancode, int action, Excavator& e) {
 	switch (key)
 	{
 	case GLFW_KEY_ESCAPE:
