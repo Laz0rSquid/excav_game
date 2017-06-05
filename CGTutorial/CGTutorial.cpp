@@ -71,6 +71,8 @@ MVPHandler MVP(programID);
 
 Controls ctrls;
 
+GLFWwindow* window;
+
 //needed later
 float angleX = 0.0;
 float angleY = 0.0;
@@ -106,80 +108,7 @@ void drawPlayfield() {
 
 int main(void)
 {
-	// Initialise GLFW
-	if (!glfwInit())
-	{
-		fprintf(stderr, "Failed to initialize GLFW\n");
-		exit(EXIT_FAILURE);
-	}
-
-	// Fehler werden auf stderr ausgegeben, s. o.
-	glfwSetErrorCallback(error_callback);
-
-	// Open a window and create its OpenGL context
-	// glfwWindowHint vorher aufrufen, um erforderliche Resourcen festzulegen
-	GLFWwindow* window = glfwCreateWindow(1024, // Breite
-										  768,  // Hoehe
-										  "CG - Tutorial", // Ueberschrift
-										  NULL,  // windowed mode
-										  NULL); // shared windoe
-
-	if (!window)
-	{
-		glfwTerminate();
-		exit(EXIT_FAILURE);
-	}
-
-	// Make the window's context current (wird nicht automatisch gemacht)
-    glfwMakeContextCurrent(window);
-
-	// Initialize GLEW
-	// GLEW ermöglicht Zugriff auf OpenGL-API > 1.1
-	glewExperimental = true; // Needed for core profile
-
-	if (glewInit() != GLEW_OK)
-	{
-		fprintf(stderr, "Failed to initialize GLEW\n");
-		return -1;
-	}
-
-	// Auf Keyboard-Events reagieren
-	glfwSetKeyCallback(window, key_callback);
-
-	// Turquoise background
-	glClearColor(0.0f, 0.7f, 0.7f, 0.0f);
-
-	// z-test activate
-	glEnable(GL_DEPTH_TEST);
-
-	// pixels behind others get deleted
-	glDepthFunc(GL_LESS);
-
-	// Create and compile our GLSL program from the shaders
-	// programID = LoadShaders("TransformVertexShader.vertexshader", "ColorFragmentShader.fragmentshader");
-	programID = LoadShaders("StandardShading.vertexshader", "StandardShading.fragmentshader");
-	MVP.setPID(programID);
 	
-	// Shader auch benutzen !
-	glUseProgram(programID);
-
-	std::vector<glm::vec3> vertices;
-	std::vector<glm::vec2> uvs;
-	std::vector<glm::vec3> normals;
-	bool res = loadOBJ("teapot.obj", vertices, uvs, normals);
-
-	// Jedes Objekt eigenem VAO zuordnen, damit mehrere Objekte moeglich sind
-	// VAOs sind Container fuer mehrere Buffer, die zusammen gesetzt werden sollen.
-	GLuint VertexArrayIDTeapot;
-	glGenVertexArrays(1, &VertexArrayIDTeapot);
-	glBindVertexArray(VertexArrayIDTeapot);
-
-	// Ein ArrayBuffer speichert Daten zu Eckpunkten (hier xyz bzw. Position)
-	GLuint vertexbuffer;
-	glGenBuffers(1, &vertexbuffer); // Kennung erhalten
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer); // Daten zur Kennung definieren
-												 // Buffer zugreifbar für die Shader machen
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
 
 
 	// Erst nach glEnableVertexAttribArray kann DrawArrays auf die Daten zugreifen...
@@ -271,5 +200,112 @@ int main(void)
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();
 	return 0;
+}
+
+void setup()
+{
+	initializeGFLW();
+	openWindow();
+	initializeGLEW();
+	useShader();
+}
+
+void initializeGFLW()
+{
+	// Initialise GLFW
+	if (!glfwInit())
+	{
+		fprintf(stderr, "Failed to initialize GLFW\n");
+		exit(EXIT_FAILURE);
+	}
+
+	// Fehler werden auf stderr ausgegeben, s. o.
+	glfwSetErrorCallback(error_callback);
+}
+
+void openWindow()
+{
+	// Open a window and create its OpenGL context
+	// glfwWindowHint vorher aufrufen, um erforderliche Resourcen festzulegen
+	window = glfwCreateWindow(1024, // Breite
+		768,  // Hoehe
+		"CG - Tutorial", // Ueberschrift
+		NULL,  // windowed mode
+		NULL); // shared windoe
+
+	if (!window)
+	{
+		glfwTerminate();
+		exit(EXIT_FAILURE);
+	}
+
+	// Make the window's context current (wird nicht automatisch gemacht)
+	glfwMakeContextCurrent(window);
+
+	// Auf Keyboard-Events reagieren
+	glfwSetKeyCallback(window, key_callback);
+
+	// Turquoise background
+	glClearColor(0.0f, 0.7f, 0.7f, 0.0f);
+
+	// z-test activate
+	glEnable(GL_DEPTH_TEST);
+
+	// pixels behind others get deleted
+	glDepthFunc(GL_LESS);
+}
+
+void initializeGLEW()
+{
+	// Initialize GLEW
+	// GLEW ermöglicht Zugriff auf OpenGL-API > 1.1
+	glewExperimental = true; // Needed for core profile
+
+	if (glewInit() != GLEW_OK)
+	{
+		fprintf(stderr, "Failed to initialize GLEW\n");
+		exit(EXIT_FAILURE);
+	}
+}
+
+void createGLSLprogram()
+{
+	// Create and compile our GLSL program from the shaders
+	// programID = LoadShaders("TransformVertexShader.vertexshader", "ColorFragmentShader.fragmentshader");
+	programID = LoadShaders("StandardShading.vertexshader", "StandardShading.fragmentshader");
+	MVP.setPID(programID);
+}
+
+void useShader()
+{
+	// Shader auch benutzen !
+	glUseProgram(programID);
+
+	std::vector<glm::vec3> vertices;
+	std::vector<glm::vec2> uvs;
+	std::vector<glm::vec3> normals;
+	bool res = loadOBJ("teapot.obj", vertices, uvs, normals);
+
+	// Jedes Objekt eigenem VAO zuordnen, damit mehrere Objekte moeglich sind
+	// VAOs sind Container fuer mehrere Buffer, die zusammen gesetzt werden sollen.
+	GLuint VertexArrayIDTeapot;
+	glGenVertexArrays(1, &VertexArrayIDTeapot);
+	glBindVertexArray(VertexArrayIDTeapot);
+
+	// Ein ArrayBuffer speichert Daten zu Eckpunkten (hier xyz bzw. Position)
+	GLuint vertexbuffer;
+	glGenBuffers(1, &vertexbuffer); // Kennung erhalten
+	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer); // Daten zur Kennung definieren
+												 // Buffer zugreifbar für die Shader machen
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+}
+
+void assignVAOs()
+{
+	// Jedes Objekt eigenem VAO zuordnen, damit mehrere Objekte moeglich sind
+	// VAOs sind Container fuer mehrere Buffer, die zusammen gesetzt werden sollen.
+	GLuint VertexArrayIDTeapot;
+	glGenVertexArrays(1, &VertexArrayIDTeapot);
+	glBindVertexArray(VertexArrayIDTeapot);
 }
 
