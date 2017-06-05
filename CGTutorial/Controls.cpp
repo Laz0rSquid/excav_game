@@ -5,9 +5,9 @@
 #include <GLFW/glfw3.h>
 
 
-Controls::Controls()
+Controls::Controls(float size)
 {
-	max = 6.0;
+	max = size;
 }
 
 

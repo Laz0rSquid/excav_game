@@ -8,7 +8,7 @@
 class Controls
 {
 public:
-	Controls();
+	Controls(float size);
 	~Controls();
 
 private:

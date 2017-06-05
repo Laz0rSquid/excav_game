@@ -37,31 +37,13 @@ using namespace glm;
 // Controls class
 #include "Controls.h"
 
+// Playfield class
+#include "Playfield.h"
+
 void error_callback(int error, const char* description)
 {
 	fputs(description, stderr);
 }
-
-/*
-// vehicle position
-float vehicleX = 0.0;
-float vehicleZ = 0.0;
-
-// step length of vehicle
-float vehicleStepLength = 0.1;
-
-// model size
-float modelSize = 0.8;
-
-// Diese Drei Matrizen global (Singleton-Muster), damit sie jederzeit modifiziert und
-// an die Grafikkarte geschickt werden koennen
-glm::mat4 Projection;
-glm::mat4 View;
-glm::mat4 Model;
-
-*/
-
-//////////////////////////////////////////////////////////
 
 Excavator excavator;
 
@@ -69,7 +51,9 @@ GLuint programID;
 
 MVPHandler MVP(programID);
 
-Controls ctrls;
+Playfield playfield;
+
+Controls ctrls(playfield.getFieldSize());
 
 //needed later
 float angleX = 0.0;
@@ -82,7 +66,7 @@ float joint2 = 0.0;
 float joint3 = 0.0;
 
 // max length of worldplane
-float maxRange = 6.0;
+//float maxRange = 6.0;
 
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -90,19 +74,19 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	ctrls.keyPress(window, key, scancode, action, excavator);
 }
 
-
+/*
 // draws plane
-void drawPlayfield() {
+void drawPlayfield(MVPHandler mvp) {
 	
-	glm::mat4 Save = MVP.getModel();
+	glm::mat4 Save = mvp.getModel();
 
 	// plane
-	MVP.setModel(glm::scale(MVP.getModel(), glm::vec3(maxRange,0.0,maxRange)));
-	MVP.sendMVP();
+	mvp.setModel(glm::scale(MVP.getModel(), glm::vec3(maxRange,0.0,maxRange)));
+	mvp.sendMVP();
 	drawCube();
-	MVP.setModel(Save);
+	mvp.setModel(Save);
 }
-
+*/
 
 int main(void)
 {
@@ -232,22 +216,24 @@ int main(void)
 		Model = glm::rotate(Model, angleZ, glm::vec3(0.0, 0.0, 1.0));
 		*/
 		//
+		
+		// camera position
 		glm::mat4 Save = MVP.getModel();
 		MVP.setModel(glm::translate(MVP.getModel(), glm::vec3(1.5, 0.0, 0.0)));
 		MVP.setModel(Save);
 		MVP.setModel(glm::scale(MVP.getModel(), glm::vec3(0.5, 0.5, 0.5)));
 		MVP.sendMVP();
 		
-		// custom draw functions
+		// draw playfield
 		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 2);
-		drawPlayfield();
+		playfield.drawPlayfield(MVP);
 		
-		// draw model
+		// draw excavator
 		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 1);
 		excavator.drawExcavator(MVP);
 
 		// lamp position
-		glm::vec4 lightPos = MVP.getModel() * glm::vec4(0, 0.9, 0, 1);
+		glm::vec4 lightPos = MVP.getModel() * glm::vec4(0, 10.9, 5.0, 1);
 		glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
 		
 		// Swap buffers
