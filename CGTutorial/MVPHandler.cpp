@@ -11,8 +11,9 @@ using namespace glm;
 #include <GLFW/glfw3.h>
 
 
-MVPHandler::MVPHandler()
+MVPHandler::MVPHandler(GLuint pid)
 {
+	programID = pid;
 	setDefaultMVP();
 }
 
@@ -22,7 +23,7 @@ MVPHandler::~MVPHandler()
 }
 
 
-void MVPHandler::sendMVP(GLuint programID)
+void MVPHandler::sendMVP()
 {
 	glm::mat4 MVP = Projection * View * Model;
 	// Send our transformation to the currently bound shader, 
@@ -43,7 +44,7 @@ void MVPHandler::setDefaultMVP()
 		glm::vec3(0, 0, 0),  // and looks at the origin
 		glm::vec3(0, 1, 0)); // Head is up (set to 0,-1,0 to look upside-down)
 
-							 // Model matrix : an identity matrix (model will be at the origin)
+	// Model matrix : an identity matrix (model will be at the origin)
 	Model = glm::mat4(1.0f);
 }
 
@@ -54,4 +55,9 @@ glm::mat4 MVPHandler::getModel()
 void MVPHandler::setModel(glm::mat4 m)
 {
 	Model = m;
+}
+
+void MVPHandler::setPID(GLuint pid)
+{
+	programID = pid;
 }

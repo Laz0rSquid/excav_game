@@ -45,15 +45,15 @@ Excavator::~Excavator()
 {
 }
 
-void Excavator::drawExcavator(float size, glm::mat4 Model)
+void Excavator::drawExcavator(MVPHandler mvp)
 {
-	glm::mat4 Save = Model;
+	glm::mat4 Save = mvp.getModel();
 
-	Model = glm::translate(Model, glm::vec3(xPosition, size, zPosition));
-	Model = glm::scale(Model, glm::vec3(size, size, size));
-	sendMVP(); // encapsulate in its own class
+	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(xPosition, modelSize, zPosition)));
+	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(modelSize, modelSize, modelSize)));
+	mvp.sendMVP(); // encapsulate in its own class
 	drawSphere(10, 10);
-	Model = Save;
+	mvp.setModel(Save);
 }
 
 void Excavator::setXPos(float x)
@@ -75,3 +75,69 @@ float Excavator::getZPos()
 {
 	return zPosition;
 }
+
+//movement
+void Excavator::moveBodyLeft(float max)
+{
+	moveBody(vehicleStepLength, 0.0, max);
+}
+void Excavator::moveBodyRight(float max)
+{
+	moveBody(-vehicleStepLength, 0.0, max);
+}
+void Excavator::moveBodyUp(float max)
+{
+	moveBody(0.0, vehicleStepLength, max);
+}
+void Excavator::moveBodyDown(float max)
+{
+	moveBody(0.0, -vehicleStepLength, max);
+}
+void Excavator::moveBody(float x, float z, float max)
+{
+	xPosition += x;
+	zPosition += z;
+	/*
+	if (xPosition < max - modelSize && xPosition > -max + modelSize && zPosition < max - modelSize && zPosition > -max + modelSize)
+	{
+		xPosition += x;
+		zPosition += z;
+	}
+	*/
+};
+
+/*
+switch (key)
+{
+case GLFW_KEY_ESCAPE:
+glfwSetWindowShouldClose(window, GL_TRUE);
+break;
+case GLFW_KEY_LEFT:
+if (vehicleX < maxRange - modelSize)
+{
+vehicleX += vehicleStepLength;
+}
+break;
+case GLFW_KEY_RIGHT:
+if (vehicleX > -maxRange + modelSize)
+{
+vehicleX -= vehicleStepLength;
+}
+break;
+case GLFW_KEY_UP:
+if (vehicleZ < maxRange - modelSize)
+{
+vehicleZ += vehicleStepLength;
+}
+break;
+case GLFW_KEY_DOWN:
+if (vehicleZ > -maxRange + modelSize)
+{
+vehicleZ -= vehicleStepLength;
+}
+break;
+default:
+break;
+}
+
+*/

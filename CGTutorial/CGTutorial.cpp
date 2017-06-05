@@ -28,25 +28,48 @@ using namespace glm;
 // Ab Uebung7 werden texture.hpp und cpp benoetigt
 #include "texture.hpp"
 
+// MVPHandler class
+#include "MVPHandler.h"
 
+// excavator class
+#include "Excavator.h"
 
+// Controls class
+#include "Controls.h"
 
 void error_callback(int error, const char* description)
 {
 	fputs(description, stderr);
 }
+
+/*
 // vehicle position
 float vehicleX = 0.0;
 float vehicleZ = 0.0;
-
-// max length of worldplane
-float maxRange = 6.0;
 
 // step length of vehicle
 float vehicleStepLength = 0.1;
 
 // model size
 float modelSize = 0.8;
+
+// Diese Drei Matrizen global (Singleton-Muster), damit sie jederzeit modifiziert und
+// an die Grafikkarte geschickt werden koennen
+glm::mat4 Projection;
+glm::mat4 View;
+glm::mat4 Model;
+
+*/
+
+//////////////////////////////////////////////////////////
+
+Excavator excavator;
+
+GLuint programID;
+
+MVPHandler MVP(programID);
+
+Controls ctrls;
 
 //needed later
 float angleX = 0.0;
@@ -58,9 +81,14 @@ float joint1Z = 0.0;
 float joint2 = 0.0;
 float joint3 = 0.0;
 
+// max length of worldplane
+float maxRange = 6.0;
+
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	ctrls.keyPress(window, key, scancode, action,  excavator);
+	/*
 	switch (key)
 	{
 	case GLFW_KEY_ESCAPE:
@@ -93,16 +121,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	default:
 		break;
 	}
+	*/
 }
 
-
-// Diese Drei Matrizen global (Singleton-Muster), damit sie jederzeit modifiziert und
-// an die Grafikkarte geschickt werden koennen
-glm::mat4 Projection;
-glm::mat4 View;
-glm::mat4 Model;
-GLuint programID;
-
+/*
 void sendMVP()
 {
 	// Our ModelViewProjection : multiplication of our 3 matrices
@@ -124,17 +146,19 @@ void drawModel(float size) {
 	drawSphere(10, 10);
 	Model = Save;
 }
+*/
+
 
 // draws plane
 void drawPlayfield() {
 	
-	glm::mat4 Save = Model;
+	glm::mat4 Save = MVP.getModel();
 
 	// plane
-	Model = glm::scale(Model, glm::vec3(maxRange,0.0,maxRange));
-	sendMVP();
+	MVP.setModel(glm::scale(MVP.getModel(), glm::vec3(maxRange,0.0,maxRange)));
+	MVP.sendMVP();
 	drawCube();
-	Model = Save;
+	MVP.setModel(Save);
 }
 
 
@@ -192,7 +216,8 @@ int main(void)
 	// Create and compile our GLSL program from the shaders
 	// programID = LoadShaders("TransformVertexShader.vertexshader", "ColorFragmentShader.fragmentshader");
 	programID = LoadShaders("StandardShading.vertexshader", "StandardShading.fragmentshader");
-
+	MVP.setPID(programID);
+	
 	// Shader auch benutzen !
 	glUseProgram(programID);
 
@@ -244,19 +269,11 @@ int main(void)
 	GLuint RobotTexture = loadBMP_custom("robot_texture.bmp");
 	GLuint GrassTexture = loadBMP_custom("GrasTextureAlternative.bmp");
 
-	// make textures
-	//glGenTextures(1, &RobotTexture);
-	//glGenTextures(2, &GrassTexture);
-
 	// Bind our texture in Texture Unit 0
 	glActiveTexture(GL_TEXTURE0 + 1);
 	glBindTexture(GL_TEXTURE_2D, RobotTexture);
 	glActiveTexture(GL_TEXTURE0 + 2);
 	glBindTexture(GL_TEXTURE_2D, GrassTexture);
-
-	// Set our "myTextureSampler" sampler to user Texture Unit 0
-	//glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 0);
-	//glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 1);
 
 	// Eventloop
 	while (!glfwWindowShouldClose(window))
@@ -264,6 +281,7 @@ int main(void)
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
+		/*
 		// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
 		Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
 
@@ -274,6 +292,8 @@ int main(void)
 		
 		// Model matrix : an identity matrix (model will be at the origin)
 		Model = glm::mat4(1.0f);
+		*/
+		MVP.setDefaultMVP();
 
 		/*
 		// rotates cube by angle on the y axis
@@ -282,15 +302,11 @@ int main(void)
 		Model = glm::rotate(Model, angleZ, glm::vec3(0.0, 0.0, 1.0));
 		*/
 		//
-		glm::mat4 Save = Model;
-		Model = glm::translate(Model, glm::vec3(1.5, 0.0, 0.0));
-		//
-
-
-		//
-		Model = Save;
-		Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
-		sendMVP();
+		glm::mat4 Save = MVP.getModel();
+		MVP.setModel(glm::translate(MVP.getModel(), glm::vec3(1.5, 0.0, 0.0)));
+		MVP.setModel(Save);
+		MVP.setModel(glm::scale(MVP.getModel(), glm::vec3(0.5, 0.5, 0.5)));
+		MVP.sendMVP();
 		
 		// custom draw functions
 		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 2);
@@ -298,10 +314,11 @@ int main(void)
 		
 		// draw model
 		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 1);
-		drawModel(modelSize);
+		excavator.drawExcavator(MVP);
+		//drawModel(modelSize);
 
 		// lamp position
-		glm::vec4 lightPos = Model * glm::vec4(0, 0.9, 0, 1);
+		glm::vec4 lightPos = MVP.getModel() * glm::vec4(0, 0.9, 0, 1);
 		glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
 		
 		// Swap buffers
