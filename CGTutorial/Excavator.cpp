@@ -39,6 +39,8 @@ Excavator::Excavator()
 	zPosition = 0.0;
 	vehicleStepLength = 0.1;
 	modelSize = 0.8;
+	baseJointBentXY = 0.0;
+	baseJointRotationXZ = 0.0;
 }
 
 Excavator::~Excavator()
@@ -47,13 +49,47 @@ Excavator::~Excavator()
 
 void Excavator::drawExcavator(MVPHandler mvp)
 {
-	glm::mat4 Save = mvp.getModel();
+	/*
+	Model = glm::rotate(Model, joint1Z, glm::vec3(1.0, 0.0, 0.0));
+	glm::mat4 Save = Model;
 
-	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(xPosition, modelSize, zPosition)));
-	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(modelSize, modelSize, modelSize)));
-	mvp.sendMVP();
+	Model = glm::translate(Model, glm::vec3(0.0, h * 0.5, 0.0));
+	Model = glm::scale(Model, glm::vec3(h * 0.15, h * 0.5, h * 0.15));
+	sendMVP();
 	drawSphere(10, 10);
+	Model = Save;
+	*/
+
+	// draw body
+	glm::mat4 Save = mvp.getModel();
+	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(xPosition, modelSize, zPosition)));
+	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(0.8 * modelSize, 0.5*modelSize, modelSize)));
+	mvp.sendMVP();
+	drawCube();
+
+	// draw arm
+	drawBaseArm(mvp, 2);
+	drawOtherArm(mvp, 2);
+}
+
+void Excavator::drawBaseArm(MVPHandler mvp, float length)
+{	
+	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(0.0, modelSize, 0.0)));
+	mvp.setModel(glm::rotate(mvp.getModel(), baseJointRotationXZ, glm::vec3(0.0, 1.0, 0.0)));
+	mvp.setModel(glm::rotate(mvp.getModel(), baseJointBentXY, glm::vec3(1.0, 0.0, 0.0)));
+	
+	glm::mat4 Save = mvp.getModel();
+	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(0.0, length, 0.0)));
+	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(length * 0.1, length * 0.7, length * 0.1)));
+	mvp.sendMVP();
+	drawCube();
+	
+
 	mvp.setModel(Save);
+}
+void Excavator::drawOtherArm(MVPHandler mvp, float length)
+{
+
 }
 
 void Excavator::setXPos(float x)
@@ -100,4 +136,21 @@ void Excavator::moveBodyDown(float max)
 	if (zPosition > -max + modelSize) {
 		zPosition -= vehicleStepLength;
 	}
-};
+}
+void Excavator::bendBaseJointDown()
+{
+	baseJointBentXY += 3 * vehicleStepLength;
+}
+void Excavator::bendBaseJointUp()
+{
+	baseJointBentXY -= 3 * vehicleStepLength;
+}
+void Excavator::rotateBaseJointClockwise()
+{
+	baseJointRotationXZ -= 8 * vehicleStepLength;
+}
+void Excavator::rotateBaseJointCounterClockwise()
+{
+	baseJointRotationXZ += 8 * vehicleStepLength;
+}
+;
