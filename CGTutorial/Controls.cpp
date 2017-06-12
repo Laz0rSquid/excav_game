@@ -8,6 +8,7 @@
 Controls::Controls(float size)
 {
 	max = size;
+	animationActive = false;
 }
 
 
@@ -28,7 +29,7 @@ void Controls::keyPress(GLFWwindow* window, int key, int scancode, int action, E
 		e.moveBodyRight(max);
 		break;
 	case GLFW_KEY_UP:
-		e.animateBodyForward(max, mvp);
+		animationActive = true;
 		break;
 	case GLFW_KEY_DOWN:
 		e.moveBodyDown(max);

@@ -202,6 +202,7 @@ int main(void)
 	glBindTexture(GL_TEXTURE_2D, GrassTexture);
 
 	// Eventloop
+	double lastTime = glfwGetTime();
 	while (!glfwWindowShouldClose(window))
 	{
 		// Clear the screen
@@ -226,10 +227,20 @@ int main(void)
 		
 		// draw playfield
 		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 2);
-		playfield.drawPlayfield(MVP);
+		//playfield.drawPlayfield(MVP);
 		
 		// draw excavator
 		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 1);
+		double thisTime = glfwGetTime();
+		if (ctrls.animationActive == true)
+		{
+			excavator.animateBodyForward(thisTime - lastTime, playfield.getFieldSize());
+			lastTime = thisTime;
+		}
+		if (thisTime - lastTime >= 5.0) {
+			ctrls.animationActive = false;
+		}
+
 		excavator.drawExcavator(MVP);
 
 		// lamp position

@@ -22,7 +22,8 @@ public:
 	void rotateBaseJointCounterClockwise();
 	void drawBaseArm(MVPHandler mvp, float length);
 	void drawOtherArm(MVPHandler mvp, float length);
-	void Excavator::animateBodyForward(float max, MVPHandler mvp);
+	void animateBodyForward(float secondsElaped, float max);
+	void task(float max, MVPHandler mvp);
 	
 private:
 	float xPosition;

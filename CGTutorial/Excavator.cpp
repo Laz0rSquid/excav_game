@@ -6,6 +6,7 @@ using namespace std;
 #include <stdlib.h>
 #include <vector>
 #include <ctime>
+#include <thread>
 
 // Include GLEW
 #include <GL/glew.h>
@@ -155,7 +156,20 @@ void Excavator::rotateBaseJointCounterClockwise()
 	baseJointRotationXZ += 8 * vehicleStepLength;
 }
 
-void Excavator::animateBodyForward(float max, MVPHandler mvp)
+void Excavator::animateBodyForward(float secondsElaped, float max)
+{
+	if (secondsElaped < 5.0) {
+		const GLfloat stepsPerSecond = 0.00001f;
+		if (zPosition < max - modelSize) {
+			zPosition += secondsElaped * stepsPerSecond;
+		}
+
+		moveBodyUp(max);
+	}
+	
+}
+
+void Excavator::task(float max, MVPHandler mvp)
 {
 	clock_t begin = clock();
 	double elapsed_secs = 0.0;
@@ -165,7 +179,6 @@ void Excavator::animateBodyForward(float max, MVPHandler mvp)
 		elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
 
 		moveBodyUp(max);
-		drawExcavator(mvp);
 	}
 }
 ;
