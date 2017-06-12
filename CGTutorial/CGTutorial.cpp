@@ -55,38 +55,10 @@ Playfield playfield;
 
 Controls ctrls(playfield.getFieldSize());
 
-//needed later
-float angleX = 0.0;
-float angleY = 0.0;
-float angleZ = 0.0;
-
-float joint1X = 0.0;
-float joint1Z = 0.0;
-float joint2 = 0.0;
-float joint3 = 0.0;
-
-// max length of worldplane
-//float maxRange = 6.0;
-
-
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	ctrls.keyPress(window, key, scancode, action, excavator, MVP);
 }
-
-/*
-// draws plane
-void drawPlayfield(MVPHandler mvp) {
-	
-	glm::mat4 Save = mvp.getModel();
-
-	// plane
-	mvp.setModel(glm::scale(MVP.getModel(), glm::vec3(maxRange,0.0,maxRange)));
-	mvp.sendMVP();
-	drawCube();
-	mvp.setModel(Save);
-}
-*/
 
 int main(void)
 {
@@ -209,14 +181,6 @@ int main(void)
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 		MVP.setDefaultMVP();
-
-		/*
-		// rotates cube by angle on the y axis
-		Model = glm::rotate(Model, angleX, glm::vec3(0.0, 1.0, 0.0));
-		Model = glm::rotate(Model, angleY, glm::vec3(1.0, 0.0, 0.0));
-		Model = glm::rotate(Model, angleZ, glm::vec3(0.0, 0.0, 1.0));
-		*/
-		//
 		
 		// camera position
 		glm::mat4 Save = MVP.getModel();
@@ -227,7 +191,7 @@ int main(void)
 		
 		// draw playfield
 		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 2);
-		//playfield.drawPlayfield(MVP);
+		playfield.drawPlayfield(MVP);
 		
 		// draw excavator
 		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 1);
@@ -237,8 +201,8 @@ int main(void)
 			excavator.animateBodyForward(thisTime - lastTime, playfield.getFieldSize());
 			lastTime = thisTime;
 		}
-		if (thisTime - lastTime >= 5.0) {
-			ctrls.animationActive = false;
+		if (thisTime - lastTime >= 0.01) {
+			ctrls.setAnimationActive(false);
 		}
 
 		excavator.drawExcavator(MVP);

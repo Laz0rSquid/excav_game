@@ -18,5 +18,7 @@ public:
 	void keyPress(GLFWwindow* window, int key, int scancode, int action, Excavator& e, MVPHandler mvp);
 
 	bool animationActive;
+
+	void setAnimationActive(bool status);
 };
 

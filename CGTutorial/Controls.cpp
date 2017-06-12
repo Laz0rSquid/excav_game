@@ -29,7 +29,8 @@ void Controls::keyPress(GLFWwindow* window, int key, int scancode, int action, E
 		e.moveBodyRight(max);
 		break;
 	case GLFW_KEY_UP:
-		animationActive = true;
+		setAnimationActive(true);
+		//animationActive = true;
 		break;
 	case GLFW_KEY_DOWN:
 		e.moveBodyDown(max);
@@ -48,5 +49,10 @@ void Controls::keyPress(GLFWwindow* window, int key, int scancode, int action, E
 		break;
 	default:
 		break;
-	}
+	}	
+}
+
+void Controls::setAnimationActive(bool status)
+{
+	animationActive = status;
 }

@@ -158,7 +158,7 @@ void Excavator::rotateBaseJointCounterClockwise()
 
 void Excavator::animateBodyForward(float secondsElaped, float max)
 {
-	if (secondsElaped < 5.0) {
+	if (secondsElaped < 0.01) {
 		const GLfloat stepsPerSecond = 0.00001f;
 		if (zPosition < max - modelSize) {
 			zPosition += secondsElaped * stepsPerSecond;
