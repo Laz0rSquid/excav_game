@@ -71,7 +71,7 @@ float joint3 = 0.0;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	ctrls.keyPress(window, key, scancode, action, excavator);
+	ctrls.keyPress(window, key, scancode, action, excavator, MVP);
 }
 
 /*

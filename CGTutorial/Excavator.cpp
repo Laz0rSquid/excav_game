@@ -5,6 +5,7 @@ using namespace std;
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
+#include <ctime>
 
 // Include GLEW
 #include <GL/glew.h>
@@ -152,5 +153,19 @@ void Excavator::rotateBaseJointClockwise()
 void Excavator::rotateBaseJointCounterClockwise()
 {
 	baseJointRotationXZ += 8 * vehicleStepLength;
+}
+
+void Excavator::animateBodyForward(float max, MVPHandler mvp)
+{
+	clock_t begin = clock();
+	double elapsed_secs = 0.0;
+
+	while (elapsed_secs < 1.0) {
+		clock_t end = clock();
+		elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+
+		moveBodyUp(max);
+		drawExcavator(mvp);
+	}
 }
 ;

@@ -15,7 +15,7 @@ Controls::~Controls()
 {
 }
 
-void Controls::keyPress(GLFWwindow* window, int key, int scancode, int action, Excavator& e) {
+void Controls::keyPress(GLFWwindow* window, int key, int scancode, int action, Excavator& e, MVPHandler mvp) {
 	switch (key)
 	{
 	case GLFW_KEY_ESCAPE:
@@ -28,7 +28,7 @@ void Controls::keyPress(GLFWwindow* window, int key, int scancode, int action, E
 		e.moveBodyRight(max);
 		break;
 	case GLFW_KEY_UP:
-		e.moveBodyUp(max);
+		e.animateBodyForward(max, mvp);
 		break;
 	case GLFW_KEY_DOWN:
 		e.moveBodyDown(max);
