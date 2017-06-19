@@ -19,6 +19,10 @@ public:
 
 	bool animationActive;
 
+	double animationStartTime;
+
 	void setAnimationActive(bool status);
+
+	void setAnimationStartTime();
 };
 

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
+#include <iostream>
 
 // Include GLEW
 #include <GL/glew.h>
@@ -173,8 +174,13 @@ int main(void)
 	glActiveTexture(GL_TEXTURE0 + 2);
 	glBindTexture(GL_TEXTURE_2D, GrassTexture);
 
+	static double limitFPS = 1.0 / 60.0;
+
+	double lastTime = glfwGetTime(), timer = lastTime;
+	double deltaTime = 0, nowTime = 0, startTime = 0;
+	int frames = 0, updates = 0;
+
 	// Eventloop
-	double lastTime = glfwGetTime();
 	while (!glfwWindowShouldClose(window))
 	{
 		// Clear the screen
@@ -195,16 +201,38 @@ int main(void)
 		
 		// draw excavator
 		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 1);
-		double thisTime = glfwGetTime();
-		if (ctrls.animationActive == true)
-		{
-			excavator.animateBodyForward(thisTime - lastTime, playfield.getFieldSize());
-			lastTime = thisTime;
-		}
-		if (thisTime - lastTime >= 0.01) {
-			ctrls.setAnimationActive(false);
+
+		// - Measure time
+		nowTime = glfwGetTime();
+		deltaTime += (nowTime - lastTime) / limitFPS;
+		lastTime = nowTime;
+
+		// - Only update at 60 frames / s
+		while (deltaTime >= 1.0) {
+			std::cout << "animationActive: " << ctrls.animationActive << std::endl;
+			if (ctrls.animationActive == true)
+			{
+				excavator.moveBodyUp(playfield.getFieldSize());   // - Update function
+				if (nowTime - ctrls.animationStartTime >= 3.0) {
+					std::cout << "timer 3sec: true" << std::endl;
+					ctrls.setAnimationActive(false);
+				}
+			}
+			//excavator.moveBodyUp(playfield.getFieldSize());   // - Update function
+			updates++;
+			deltaTime--;
 		}
 
+		// - Render at maximum possible frames
+		excavator.drawExcavator(MVP); // - Render function
+		frames++;
+
+		// - Reset after one second
+		if (glfwGetTime() - timer > 1.0) {
+			timer++;
+			std::cout << "FPS: " << frames << " Updates:" << updates << std::endl;
+			updates = 0, frames = 0;
+		}
 		excavator.drawExcavator(MVP);
 
 		// lamp position

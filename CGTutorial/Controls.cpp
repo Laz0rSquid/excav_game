@@ -9,6 +9,7 @@ Controls::Controls(float size)
 {
 	max = size;
 	animationActive = false;
+	animationStartTime = 0;
 }
 
 
@@ -54,5 +55,14 @@ void Controls::keyPress(GLFWwindow* window, int key, int scancode, int action, E
 
 void Controls::setAnimationActive(bool status)
 {
-	animationActive = status;
+	this->animationActive = status;
+	if (status == true)
+	{
+		setAnimationStartTime();
+	}
+}
+
+void Controls::setAnimationStartTime()
+{
+	animationStartTime = glfwGetTime();
 }
