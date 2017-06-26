@@ -10,20 +10,21 @@ public:
 	void setZPos(float z);
 	float getXPos();
 	float getZPos();
+	float getOrientation();
 	
 	void drawExcavator(MVPHandler mvp);
-	void moveBodyLeft(float max);
-	void moveBodyRight(float max);
+	void moveBodyLeft(float max, float stepLength);
+	void moveBodyRight(float max, float stepLength);
 	void moveBodyUp(float max, float stepLength);
 	void moveBodyDown(float max, float stepLength);
 	void bendBaseJointDown();
 	void bendBaseJointUp();
-	void rotateBaseJointClockwise();
-	void rotateBaseJointCounterClockwise();
+	void rotateBodyCounterClockwise(float stepLength);
+	void rotateBodyClockwise(float stepLength);
+	//void rotateBaseJointClockwise();
+	//void rotateBaseJointCounterClockwise();
 	void drawBaseArm(MVPHandler mvp, float length);
 	void drawOtherArm(MVPHandler mvp, float length);
-	void animateBodyForward(float secondsElaped, float max);
-	void task(float max, MVPHandler mvp);
 	
 private:
 	float xPosition;
@@ -32,5 +33,5 @@ private:
 	float vehicleStepLength;
 	float modelSize;
 	float baseJointBentXY;
-	float baseJointRotationXZ;
+	// float baseJointRotationXZ;
 };

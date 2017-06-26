@@ -42,8 +42,8 @@ Excavator::Excavator()
 	orientation = 0.0;
 	vehicleStepLength = 0.1;
 	modelSize = 1.0;
-	baseJointBentXY = 0.0;
-	baseJointRotationXZ = 0.0;
+	baseJointBentXY = 45.0;
+	//baseJointRotationXZ = 0.0;
 }
 
 Excavator::~Excavator()
@@ -65,9 +65,9 @@ void Excavator::drawExcavator(MVPHandler mvp)
 
 	// draw body
 	//glm::mat4 Save = mvp.getModel();
-	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(0.8 * modelSize, 0.5*modelSize, modelSize)));
-	mvp.setModel(glm::rotate(mvp.getModel(), orientation, glm::vec3(0.0, 1.0, 0.0)));
 	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(xPosition, modelSize, zPosition)));
+	mvp.setModel(glm::rotate(mvp.getModel(), orientation, glm::vec3(0.0, 1.0, 0.0)));
+	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(0.8 * modelSize, 0.5*modelSize, modelSize)));
 
 	mvp.sendMVP();
 	drawCube();
@@ -81,7 +81,7 @@ void Excavator::drawExcavator(MVPHandler mvp)
 void Excavator::drawBaseArm(MVPHandler mvp, float length)
 {	
 	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(0.0, modelSize, 0.0)));
-	mvp.setModel(glm::rotate(mvp.getModel(), baseJointRotationXZ, glm::vec3(0.0, 1.0, 0.0)));
+	//mvp.setModel(glm::rotate(mvp.getModel(), baseJointRotationXZ, glm::vec3(0.0, 1.0, 0.0)));
 	mvp.setModel(glm::rotate(mvp.getModel(), baseJointBentXY, glm::vec3(1.0, 0.0, 0.0)));
 	
 	glm::mat4 Save = mvp.getModel();
@@ -118,20 +118,23 @@ float Excavator::getZPos()
 	return zPosition;
 }
 
-//movement
-void Excavator::moveBodyLeft(float max)
+float Excavator::getOrientation()
 {
-	orientation -= 8 * vehicleStepLength;
-	/*
-	if (xPosition < max - modelSize) {
-		xPosition += vehicleStepLength;
-	}
-	*/
+	
+	return fmod(orientation, 360);
 }
-void Excavator::moveBodyRight(float max)
+
+// Body movement
+void Excavator::moveBodyLeft(float max, float stepLength)
+{
+	if (xPosition < max - modelSize) {
+		xPosition += stepLength;
+	}
+}
+void Excavator::moveBodyRight(float max, float stepLength)
 {
 	if (xPosition > -max + modelSize) {
-		xPosition -= vehicleStepLength;
+		xPosition -= stepLength;
 	}
 }
 void Excavator::moveBodyUp(float max, float stepLength)
@@ -146,6 +149,19 @@ void Excavator::moveBodyDown(float max, float stepLength)
 		zPosition -= stepLength;
 	}
 }
+
+// Body rotation
+void Excavator::rotateBodyCounterClockwise(float stepLength)
+{
+	orientation = fmod(orientation + stepLength, 360);
+}
+
+void Excavator::rotateBodyClockwise(float stepLength)
+{
+	orientation = fmod(orientation - stepLength, 360);
+}
+
+// Arm movement
 void Excavator::bendBaseJointDown()
 {
 	baseJointBentXY += 3 * vehicleStepLength;
@@ -154,6 +170,9 @@ void Excavator::bendBaseJointUp()
 {
 	baseJointBentXY -= 3 * vehicleStepLength;
 }
+
+
+/*
 void Excavator::rotateBaseJointClockwise()
 {
 	baseJointRotationXZ -= 8 * vehicleStepLength;
@@ -162,17 +181,7 @@ void Excavator::rotateBaseJointCounterClockwise()
 {
 	baseJointRotationXZ += 8 * vehicleStepLength;
 }
+*/
 
-void Excavator::animateBodyForward(float secondsElaped, float max)
-{
-	if (secondsElaped < 0.01) {
-		const GLfloat stepsPerSecond = 0.00001f;
-		if (zPosition < max - modelSize) {
-			zPosition += secondsElaped * stepsPerSecond;
-		}
 
-		// moveBodyUp(max);
-	}
-	
-}
 ;
