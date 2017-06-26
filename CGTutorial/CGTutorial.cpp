@@ -35,9 +35,6 @@ using namespace glm;
 // excavator class
 #include "Excavator.h"
 
-// Controls class
-#include "Controls.h"
-
 // Playfield class
 #include "Playfield.h"
 
@@ -54,12 +51,65 @@ MVPHandler MVP(programID);
 
 Playfield playfield;
 
-Controls ctrls(playfield.getFieldSize());
+float fieldSize = playfield.getFieldSize();
+
+bool animationActive;
+
+double animationStartTime;
+
+void setAnimationStartTime()
+{
+	animationStartTime = glfwGetTime();
+}
+
+void setAnimationActive(bool status)
+{
+	animationActive = status;
+	if (status == true)
+	{
+		setAnimationStartTime();
+	}
+}
+
+
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	ctrls.keyPress(window, key, scancode, action, excavator, MVP);
+	switch (key)
+	{
+	case GLFW_KEY_ESCAPE:
+		glfwSetWindowShouldClose(window, GL_TRUE);
+		break;
+	case GLFW_KEY_LEFT:
+		excavator.moveBodyLeft(playfield.getFieldSize());
+		break;
+	case GLFW_KEY_RIGHT:
+		excavator.moveBodyRight(playfield.getFieldSize());
+		break;
+	case GLFW_KEY_UP:
+		setAnimationActive(true);
+		//animationActive = true;
+		break;
+	case GLFW_KEY_DOWN:
+		excavator.moveBodyDown(playfield.getFieldSize());
+		break;
+	case GLFW_KEY_W:
+		excavator.bendBaseJointDown();
+		break;
+	case GLFW_KEY_S:
+		excavator.bendBaseJointUp();
+		break;
+	case GLFW_KEY_A:
+		excavator.rotateBaseJointCounterClockwise();
+		break;
+	case GLFW_KEY_D:
+		excavator.rotateBaseJointClockwise();
+		break;
+	default:
+		break;
+	}
 }
+
 
 int main(void)
 {
@@ -209,13 +259,13 @@ int main(void)
 
 		// - Only update at 60 frames / s
 		while (deltaTime >= 1.0) {
-			std::cout << "animationActive: " << ctrls.animationActive << std::endl;
-			if (ctrls.animationActive == true)
+			std::cout << "animationActive: " << animationActive << std::endl;
+			if (animationActive)
 			{
 				excavator.moveBodyUp(playfield.getFieldSize());   // - Update function
-				if (nowTime - ctrls.animationStartTime >= 3.0) {
+				if (nowTime - animationStartTime >= 3.0) {
 					std::cout << "timer 3sec: true" << std::endl;
-					ctrls.setAnimationActive(false);
+					setAnimationActive(false);
 				}
 			}
 			//excavator.moveBodyUp(playfield.getFieldSize());   // - Update function
