@@ -14,7 +14,7 @@ public:
 	void drawExcavator(MVPHandler mvp);
 	void moveBodyLeft(float max);
 	void moveBodyRight(float max);
-	void moveBodyUp(float max);
+	void moveBodyUp(float max, float stepLength);
 	void moveBodyDown(float max);
 	void bendBaseJointDown();
 	void bendBaseJointUp();

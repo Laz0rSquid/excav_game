@@ -127,10 +127,10 @@ void Excavator::moveBodyRight(float max)
 		xPosition -= vehicleStepLength;
 	}
 }
-void Excavator::moveBodyUp(float max)
+void Excavator::moveBodyUp(float max, float stepLength)
 {
 	if (zPosition < max - modelSize) {
-		zPosition += vehicleStepLength;
+		zPosition += stepLength;
 	}
 }
 void Excavator::moveBodyDown(float max)
@@ -164,21 +164,8 @@ void Excavator::animateBodyForward(float secondsElaped, float max)
 			zPosition += secondsElaped * stepsPerSecond;
 		}
 
-		moveBodyUp(max);
+		// moveBodyUp(max);
 	}
 	
-}
-
-void Excavator::task(float max, MVPHandler mvp)
-{
-	clock_t begin = clock();
-	double elapsed_secs = 0.0;
-
-	while (elapsed_secs < 1.0) {
-		clock_t end = clock();
-		elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-
-		moveBodyUp(max);
-	}
 }
 ;

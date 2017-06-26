@@ -178,6 +178,10 @@ int main(void)
 
 	double lastTime = glfwGetTime(), timer = lastTime;
 	double deltaTime = 0, nowTime = 0, startTime = 0;
+	double animationDuration = 0.5;
+	float animationDistance = 5.0;
+	float stepLength = animationDistance / (animationDuration * 60);
+
 	int frames = 0, updates = 0;
 
 	// Eventloop
@@ -197,7 +201,7 @@ int main(void)
 		
 		// draw playfield
 		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 2);
-		playfield.drawPlayfield(MVP);
+		// playfield.drawPlayfield(MVP);
 		
 		// draw excavator
 		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 1);
@@ -212,8 +216,9 @@ int main(void)
 			std::cout << "animationActive: " << ctrls.animationActive << std::endl;
 			if (ctrls.animationActive == true)
 			{
-				excavator.moveBodyUp(playfield.getFieldSize());   // - Update function
-				if (nowTime - ctrls.animationStartTime >= 3.0) {
+
+				excavator.moveBodyUp(playfield.getFieldSize(), stepLength);   // - Update function
+				if (nowTime - ctrls.animationStartTime >= animationDuration) {
 					std::cout << "timer 3sec: true" << std::endl;
 					ctrls.setAnimationActive(false);
 				}
