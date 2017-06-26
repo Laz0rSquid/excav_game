@@ -15,7 +15,7 @@ public:
 	void moveBodyLeft(float max);
 	void moveBodyRight(float max);
 	void moveBodyUp(float max, float stepLength);
-	void moveBodyDown(float max);
+	void moveBodyDown(float max, float stepLength);
 	void bendBaseJointDown();
 	void bendBaseJointUp();
 	void rotateBaseJointClockwise();
@@ -28,6 +28,7 @@ public:
 private:
 	float xPosition;
 	float zPosition;
+	float orientation;
 	float vehicleStepLength;
 	float modelSize;
 	float baseJointBentXY;

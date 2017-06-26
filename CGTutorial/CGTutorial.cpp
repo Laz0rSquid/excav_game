@@ -57,18 +57,32 @@ bool animationActive;
 
 double animationStartTime;
 
-void setAnimationStartTime()
-{
-	animationStartTime = glfwGetTime();
-}
+static double limitFPS = 1.0 / 60.0;
 
-void setAnimationActive(bool status)
+double lastTime = glfwGetTime(), timer = lastTime;
+
+double deltaTime = 0, nowTime = 0, startTime = 0;
+
+double animationDuration = 0.5;
+
+float animationDistance = 2.0;
+
+float stepLength = animationDistance / (animationDuration * 60);
+
+int frames = 0;
+
+int updates = 0;
+
+int keyPressed;
+
+void setAnimationActive(bool status, int key)
 {
 	animationActive = status;
 	if (status == true)
 	{
-		setAnimationStartTime();
+		animationStartTime = glfwGetTime();
 	}
+	keyPressed = key;
 }
 
 
@@ -87,11 +101,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		excavator.moveBodyRight(playfield.getFieldSize());
 		break;
 	case GLFW_KEY_UP:
-		setAnimationActive(true);
-		//animationActive = true;
+		setAnimationActive(true, key);
 		break;
 	case GLFW_KEY_DOWN:
-		excavator.moveBodyDown(playfield.getFieldSize());
+		setAnimationActive(true, key);
 		break;
 	case GLFW_KEY_W:
 		excavator.bendBaseJointDown();
@@ -108,6 +121,51 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	default:
 		break;
 	}
+}
+
+void playAnimations() {
+	// - Measure time
+	nowTime = glfwGetTime();
+	deltaTime += (nowTime - lastTime) / limitFPS;
+	lastTime = nowTime;
+
+	// - Only update at 60 frames / s
+	while (deltaTime >= 1.0) {
+		std::cout << "animationActive: " << animationActive << std::endl;
+		if (animationActive)
+		{
+			switch (keyPressed)
+			{
+			case GLFW_KEY_UP:
+				excavator.moveBodyUp(playfield.getFieldSize(), stepLength);   // - Update function
+				break;
+			case GLFW_KEY_DOWN:
+				excavator.moveBodyDown(playfield.getFieldSize(), stepLength);
+				break;
+			default:
+				break;
+			}
+			//excavator.moveBodyUp(playfield.getFieldSize(), stepLength);   // - Update function
+			if (nowTime - animationStartTime >= animationDuration) {
+				std::cout << "timer 3sec: true" << std::endl;
+				setAnimationActive(false, NULL);
+			}
+		}
+		//excavator.moveBodyUp(playfield.getFieldSize());   // - Update function
+		updates++;
+		deltaTime--;
+	}
+	// - Render at maximum possible frames
+	excavator.drawExcavator(MVP); // - Render function
+	frames++;
+
+	// - Reset after one second
+	if (glfwGetTime() - timer > 1.0) {
+		timer++;
+		std::cout << "FPS: " << frames << " Updates:" << updates << std::endl;
+		updates = 0, frames = 0;
+	}
+	excavator.drawExcavator(MVP);
 }
 
 
@@ -224,15 +282,17 @@ int main(void)
 	glActiveTexture(GL_TEXTURE0 + 2);
 	glBindTexture(GL_TEXTURE_2D, GrassTexture);
 
+	/*
 	static double limitFPS = 1.0 / 60.0;
 
 	double lastTime = glfwGetTime(), timer = lastTime;
 	double deltaTime = 0, nowTime = 0, startTime = 0;
 	double animationDuration = 0.5;
-	float animationDistance = 5.0;
+	float animationDistance = 2.0;
 	float stepLength = animationDistance / (animationDuration * 60);
 
 	int frames = 0, updates = 0;
+	*/
 
 	// Eventloop
 	while (!glfwWindowShouldClose(window))
@@ -251,12 +311,15 @@ int main(void)
 		
 		// draw playfield
 		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 2);
-		// playfield.drawPlayfield(MVP);
+		playfield.drawPlayfield(MVP);
 		
 		// draw excavator
 		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 1);
 
 		// - Measure time
+
+		playAnimations();
+		/*
 		nowTime = glfwGetTime();
 		deltaTime += (nowTime - lastTime) / limitFPS;
 		lastTime = nowTime;
@@ -276,19 +339,21 @@ int main(void)
 			updates++;
 			deltaTime--;
 		}
-
+		
 		// - Render at maximum possible frames
 		excavator.drawExcavator(MVP); // - Render function
 		frames++;
 
 		// - Reset after one second
 		if (glfwGetTime() - timer > 1.0) {
-			timer++;
-			std::cout << "FPS: " << frames << " Updates:" << updates << std::endl;
-			updates = 0, frames = 0;
+		timer++;
+		std::cout << "FPS: " << frames << " Updates:" << updates << std::endl;
+		updates = 0, frames = 0;
 		}
 		excavator.drawExcavator(MVP);
 
+		*/
+		excavator.drawExcavator(MVP);
 		// lamp position
 		glm::vec4 lightPos = MVP.getModel() * glm::vec4(0, 10.9, 5.0, 1);
 		glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);

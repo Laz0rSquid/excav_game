@@ -4,7 +4,7 @@
 
 Playfield::Playfield()
 {
-	fieldSize = 6.0;
+	fieldSize = 7.0;
 }
 
 
