@@ -79,6 +79,8 @@ float endOrientation;
 
 float zoomLevel = 0.5;
 
+bool moveDown;
+
 void setAnimationActive(bool status, int key)
 {
 	animationActive = status;
@@ -110,19 +112,17 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	case GLFW_KEY_D:
 		setAnimationActive(true, key);
 		break;
-	case GLFW_KEY_LEFT:
+	case GLFW_KEY_Q:
 		setAnimationActive(true, key);
 		break;
-	case GLFW_KEY_RIGHT:
+	case GLFW_KEY_E:
+		setAnimationActive(true, key);
+		break;
+	case GLFW_KEY_SPACE:
+		moveDown = true;
 		setAnimationActive(true, key);
 		break;
 	case GLFW_KEY_UP:
-		excavator.bendBaseJointDown();
-		break;
-	case GLFW_KEY_DOWN:
-		excavator.bendBaseJointUp();
-		break;
-	case GLFW_KEY_U:
 		if (zoomLevel > 0.1)
 		{
 			zoomLevel -= 0.05;
@@ -132,7 +132,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			zoomLevel = 0.1;
 		}
 		break;
-	case GLFW_KEY_J:
+	case GLFW_KEY_DOWN:
 		if (zoomLevel < 1.0)
 		{
 			zoomLevel += 0.05;
@@ -203,7 +203,7 @@ void playAnimations() {
 				stepLength = animationDistance / (animationDuration * 60);
 				excavator.moveBodyRight(playfield.getFieldSize(), stepLength);
 				break;
-			case GLFW_KEY_LEFT:
+			case GLFW_KEY_Q:
 				animationDuration = 0.3;
 				animationDistance = 90.0;
 				stepLength = animationDistance / (animationDuration * 60);
@@ -214,7 +214,7 @@ void playAnimations() {
 				}
 				startOrientation += stepLength;
 				break;
-			case GLFW_KEY_RIGHT:
+			case GLFW_KEY_E:
 				animationDuration = 0.3;
 				animationDistance = 90.0;
 				stepLength = animationDistance / (animationDuration * 60);
@@ -224,6 +224,25 @@ void playAnimations() {
 					excavator.rotateBodyClockwise(stepLength);
 				}
 				startOrientation += stepLength;
+				break;
+			case GLFW_KEY_SPACE:
+				
+				animationDuration = 0.5;
+				animationDistance = excavator.getMaxBaseAngle() -  excavator.getMinbaseAngle();
+				stepLength = (animationDistance / (animationDuration * 60)) * 2;
+				std::cout << "baseJointAngle = " << excavator.getBaseJointAngle() << std::endl;
+				if (moveDown && excavator.getBaseJointAngle() < excavator.getMaxBaseAngle())
+				{
+					excavator.bendBaseJointDown(stepLength);
+					if (excavator.getBaseJointAngle() >= excavator.getMaxBaseAngle()) {
+						moveDown = false;
+					}
+				}
+				else if (!moveDown && excavator.getBaseJointAngle() > excavator.getMinbaseAngle())
+				{
+
+					excavator.bendBaseJointUp(stepLength);
+				}
 				break;
 			default:
 				break;

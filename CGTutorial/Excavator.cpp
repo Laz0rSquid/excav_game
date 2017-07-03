@@ -43,6 +43,8 @@ Excavator::Excavator()
 	vehicleStepLength = 0.1;
 	modelSize = 1.0;
 	baseJointBentXY = 30.0;
+	maxBaseAngle = 60;
+	minBaseAngle = 30;
 	secondJoint = 120.0;
 	armLength = 2;
 	armPieceLength = armLength * 0.7;
@@ -209,12 +211,27 @@ void Excavator::rotateBodyClockwise(float stepLength)
 }
 
 // Arm movement
-void Excavator::bendBaseJointDown()
+void Excavator::bendBaseJointDown(float stepLength)
 {
-	baseJointBentXY += 3 * vehicleStepLength;
+	baseJointBentXY += stepLength;
 }
-void Excavator::bendBaseJointUp()
+void Excavator::bendBaseJointUp(float stepLength)
 {
-	baseJointBentXY -= 3 * vehicleStepLength;
+	baseJointBentXY -= stepLength;
+}
+
+float Excavator::getBaseJointAngle()
+{
+	return baseJointBentXY;
+}
+
+float Excavator::getMaxBaseAngle()
+{
+	return maxBaseAngle;
+}
+
+float Excavator::getMinbaseAngle()
+{
+	return minBaseAngle;
 }
 ;

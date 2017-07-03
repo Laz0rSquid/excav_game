@@ -22,10 +22,13 @@ public:
 	void moveBodyRight(float max, float stepLength);
 	void moveBodyUp(float max, float stepLength);
 	void moveBodyDown(float max, float stepLength);
-	void bendBaseJointDown();
-	void bendBaseJointUp();
+	void bendBaseJointDown(float stepLength);
+	void bendBaseJointUp(float stepLength);
 	void rotateBodyCounterClockwise(float stepLength);
 	void rotateBodyClockwise(float stepLength);
+	float getBaseJointAngle();
+	float getMaxBaseAngle();
+	float getMinbaseAngle();
 	
 private:
 	float xPosition;
@@ -34,6 +37,8 @@ private:
 	float vehicleStepLength;
 	float modelSize;
 	float baseJointBentXY;
+	float maxBaseAngle;
+	float minBaseAngle;
 	float secondJoint;
 	float armLength;
 	float armPieceLength;
