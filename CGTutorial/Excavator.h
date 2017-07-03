@@ -23,8 +23,8 @@ public:
 	void rotateBodyClockwise(float stepLength);
 	//void rotateBaseJointClockwise();
 	//void rotateBaseJointCounterClockwise();
-	void drawBaseArm(MVPHandler mvp, float length);
-	void drawOtherArm(MVPHandler mvp, float length);
+	void drawBaseArm(MVPHandler mvp);
+	void drawOtherArm(MVPHandler mvp);
 	
 private:
 	float xPosition;
@@ -33,5 +33,10 @@ private:
 	float vehicleStepLength;
 	float modelSize;
 	float baseJointBentXY;
+	float secondJoint;
+	float armLength;
+	float armPieceLength;
+	float armMoveLength;
+	float armWidth;
 	// float baseJointRotationXZ;
 };

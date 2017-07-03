@@ -43,7 +43,13 @@ Excavator::Excavator()
 	vehicleStepLength = 0.1;
 	modelSize = 1.0;
 	baseJointBentXY = 45.0;
-	//baseJointRotationXZ = 0.0;
+	secondJoint = 120.0;
+	armLength = 2;
+	armPieceLength = armLength * 0.7;
+	armMoveLength = armLength * 1.4;
+	std::cout << "armMoveLength: " << armMoveLength << std::endl;
+
+	armWidth = armLength * 0.1;
 }
 
 Excavator::~Excavator()
@@ -52,17 +58,6 @@ Excavator::~Excavator()
 
 void Excavator::drawExcavator(MVPHandler mvp)
 {
-	/*
-	Model = glm::rotate(Model, joint1Z, glm::vec3(1.0, 0.0, 0.0));
-	glm::mat4 Save = Model;
-
-	Model = glm::translate(Model, glm::vec3(0.0, h * 0.5, 0.0));
-	Model = glm::scale(Model, glm::vec3(h * 0.15, h * 0.5, h * 0.15));
-	sendMVP();
-	drawSphere(10, 10);
-	Model = Save;
-	*/
-
 	// draw body
 	//glm::mat4 Save = mvp.getModel();
 	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(xPosition, modelSize, zPosition)));
@@ -74,38 +69,67 @@ void Excavator::drawExcavator(MVPHandler mvp)
 
 	//mvp.setModel(Save);
 	// draw arm
-	drawBaseArm(mvp, 2);
-	drawOtherArm(mvp, 2);
+	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(0.0, modelSize, 0.0)));
+	drawBaseArm(mvp);
+	mvp.setModel(glm::rotate(mvp.getModel(), baseJointBentXY, glm::vec3(1.0, 0.0, 0.0)));
+	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(0.0, armMoveLength + 0.4, 0.0)));
+	drawOtherArm(mvp);
 }
 
-void Excavator::drawBaseArm(MVPHandler mvp, float length)
+void Excavator::drawBaseArm(MVPHandler mvp)
 {	
-	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(0.0, modelSize, 0.0)));
-	//mvp.setModel(glm::rotate(mvp.getModel(), baseJointRotationXZ, glm::vec3(0.0, 1.0, 0.0)));
+	/*
+	std::cout << "armPieceLength: " << armPieceLength << std::endl;
+	std::cout << "armMoveLength: " << armMoveLength << std::endl;
+	std::cout << "armWidth: " << armWidth << std::endl;
+	*/
+
+	//glm::mat4 Save = mvp.getModel();
 	mvp.setModel(glm::rotate(mvp.getModel(), baseJointBentXY, glm::vec3(1.0, 0.0, 0.0)));
+	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(0.0, armLength, 0.0)));
+	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(armWidth, armPieceLength, armWidth)));
 	
-	glm::mat4 Save = mvp.getModel();
-	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(0.0, length, 0.0)));
-	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(length * 0.1, length * 0.7, length * 0.1)));
 	mvp.sendMVP();
 	drawCube();
-
-	mvp.setModel(Save);
-	//
-	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(0.0, modelSize, 0.0)));
-	//mvp.setModel(glm::rotate(mvp.getModel(), baseJointRotationXZ, glm::vec3(0.0, 1.0, 0.0)));
-	mvp.setModel(glm::rotate(mvp.getModel(), baseJointBentXY, glm::vec3(1.0, 0.0, 0.0)));
-	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(0.0, length, 0.0)));
-	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(length * 0.1, length * 0.7, length * 0.1)));
-	mvp.sendMVP();
-	drawCube();
-	//
-	mvp.setModel(Save);
+	
+	//mvp.setModel(Save);
 }
-void Excavator::drawOtherArm(MVPHandler mvp, float length)
+
+void Excavator::drawOtherArm(MVPHandler mvp)
 {
+	glm::mat4 Save = mvp.getModel();
+	mvp.setModel(glm::rotate(mvp.getModel(), secondJoint, glm::vec3(1.0, 0.0, 0.0)));
+	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(0.0, armPieceLength, 0.0)));
+	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(armWidth, armPieceLength, armWidth)));
 
+	mvp.sendMVP();
+	drawCube();
+
+	mvp.setModel(Save);
 }
+
+/*
+void drawSegment(float h) {
+	glm::mat4 Save = Model;
+
+	Model = glm::translate(Model, glm::vec3(0.0, h * 0.5, 0.0));
+	Model = glm::scale(Model, glm::vec3(h * 0.15, h * 0.5, h * 0.15));
+	sendMVP();
+	drawSphere(10, 10);
+	Model = Save;
+}
+
+Model = glm::rotate(Model, joint1X, glm::vec3(0.0, 1.0, 0.0));
+Model = glm::rotate(Model, joint1Z, glm::vec3(1.0, 0.0, 0.0));
+drawSegment(1.5f);
+Model = glm::translate(Model, glm::vec3(0.0, 1.5, 0.0));
+Model = glm::rotate(Model, joint2, glm::vec3(1.0, 0.0, 0.0));
+drawSegment(1.2f);
+Model = glm::translate(Model, glm::vec3(0.0, 1.2, 0.0));
+Model = glm::rotate(Model, joint3, glm::vec3(1.0, 0.0, 0.0));
+drawSegment(0.9f);
+*/
+
 
 void Excavator::setXPos(float x)
 {
