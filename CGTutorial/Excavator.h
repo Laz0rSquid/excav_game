@@ -25,6 +25,7 @@ public:
 	//void rotateBaseJointCounterClockwise();
 	void drawBaseArm(MVPHandler mvp);
 	void drawOtherArm(MVPHandler mvp);
+	void drawShovel(MVPHandler mvp);
 	
 private:
 	float xPosition;

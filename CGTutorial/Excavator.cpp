@@ -42,7 +42,7 @@ Excavator::Excavator()
 	orientation = 0.0;
 	vehicleStepLength = 0.1;
 	modelSize = 1.0;
-	baseJointBentXY = 45.0;
+	baseJointBentXY = 30.0;
 	secondJoint = 120.0;
 	armLength = 2;
 	armPieceLength = armLength * 0.7;
@@ -59,21 +59,35 @@ Excavator::~Excavator()
 void Excavator::drawExcavator(MVPHandler mvp)
 {
 	// draw body
-	//glm::mat4 Save = mvp.getModel();
+	glm::mat4 Save = mvp.getModel();
 	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(xPosition, modelSize, zPosition)));
 	mvp.setModel(glm::rotate(mvp.getModel(), orientation, glm::vec3(0.0, 1.0, 0.0)));
-	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(0.8 * modelSize, 0.5*modelSize, modelSize)));
+	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(modelSize, 0.5*modelSize, modelSize)));
+
+	mvp.sendMVP();
+	drawCube();
+	mvp.setModel(Save);
+
+	//draw cabin
+	Save = mvp.getModel();
+
+	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(xPosition, modelSize, zPosition)));
+	mvp.setModel(glm::rotate(mvp.getModel(), orientation, glm::vec3(0.0, 1.0, 0.0)));
+	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(0.5 * modelSize, 1.4*modelSize, 0.5 * modelSize)));
 
 	mvp.sendMVP();
 	drawCube();
 
-	//mvp.setModel(Save);
-	// draw arm
-	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(0.0, modelSize, 0.0)));
+	mvp.setModel(Save);
+	// draw base arm
+	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(xPosition, modelSize, zPosition)));
+	mvp.setModel(glm::rotate(mvp.getModel(), orientation, glm::vec3(0.0, 1.0, 0.0)));
 	drawBaseArm(mvp);
+	// draw second arm
 	mvp.setModel(glm::rotate(mvp.getModel(), baseJointBentXY, glm::vec3(1.0, 0.0, 0.0)));
 	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(0.0, armMoveLength + 0.4, 0.0)));
 	drawOtherArm(mvp);
+	// draw "shovel"
 }
 
 void Excavator::drawBaseArm(MVPHandler mvp)
@@ -84,7 +98,7 @@ void Excavator::drawBaseArm(MVPHandler mvp)
 	std::cout << "armWidth: " << armWidth << std::endl;
 	*/
 
-	//glm::mat4 Save = mvp.getModel();
+	glm::mat4 Save = mvp.getModel();
 	mvp.setModel(glm::rotate(mvp.getModel(), baseJointBentXY, glm::vec3(1.0, 0.0, 0.0)));
 	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(0.0, armLength, 0.0)));
 	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(armWidth, armPieceLength, armWidth)));
@@ -92,7 +106,7 @@ void Excavator::drawBaseArm(MVPHandler mvp)
 	mvp.sendMVP();
 	drawCube();
 	
-	//mvp.setModel(Save);
+	mvp.setModel(Save);
 }
 
 void Excavator::drawOtherArm(MVPHandler mvp)
@@ -106,6 +120,11 @@ void Excavator::drawOtherArm(MVPHandler mvp)
 	drawCube();
 
 	mvp.setModel(Save);
+}
+
+void Excavator::drawShovel(MVPHandler mvp)
+{
+	
 }
 
 /*
