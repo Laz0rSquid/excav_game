@@ -143,8 +143,8 @@ void playAnimations() {
 		startOrientation = abs(excavator.getOrientation());
 		endOrientation = startOrientation + 90;
 	}
-	std::cout << "startOrientation: " << startOrientation << std::endl;
-	std::cout << "endOrientation: " << endOrientation << std::endl;
+	//std::cout << "startOrientation: " << startOrientation << std::endl;
+	//std::cout << "endOrientation: " << endOrientation << std::endl;
 
 	// - Only update at 60 frames / s
 	while (deltaTime >= 1.0) {
@@ -357,8 +357,8 @@ int main(void)
 		MVP.sendMVP();
 		
 		// draw playfield
-		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 2);
-		playfield.drawPlayfield(MVP);
+		// glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 2);
+		playfield.drawPlayfield(MVP, programID);
 		
 		// draw excavator
 		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 1);
