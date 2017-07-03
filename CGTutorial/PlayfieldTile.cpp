@@ -5,13 +5,14 @@ PlayfieldTile::PlayfieldTile()
 {
 }
 
+/*
 PlayfieldTile::PlayfieldTile(float size, float xPos, float zPos)
 {
-	tileSize = size;
+	tileSize = size /2;
 	xPosition = xPos;
 	zPosition = zPos;
 }
-
+*/
 
 PlayfieldTile::~PlayfieldTile()
 {
@@ -19,7 +20,7 @@ PlayfieldTile::~PlayfieldTile()
 
 void PlayfieldTile::setSize(float size)
 {
-	tileSize = size;
+	tileSize = size /2;
 }
 
 void PlayfieldTile::setPosition(float xPos, float zPos)

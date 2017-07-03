@@ -176,25 +176,25 @@ float Excavator::getOrientation()
 // Body movement
 void Excavator::moveBodyLeft(float max, float stepLength)
 {
-	if (xPosition < max - modelSize) {
+	if (xPosition < max - 2*modelSize) {
 		xPosition += stepLength;
 	}
 }
 void Excavator::moveBodyRight(float max, float stepLength)
 {
-	if (xPosition > -max + modelSize) {
+	if (xPosition > -max) {
 		xPosition -= stepLength;
 	}
 }
 void Excavator::moveBodyUp(float max, float stepLength)
 {
-	if (zPosition < max - modelSize) {
+	if (zPosition < max - 2*modelSize) {
 		zPosition += stepLength;
 	}
 }
 void Excavator::moveBodyDown(float max, float stepLength)
 {
-	if (zPosition > -max + modelSize) {
+	if (zPosition > -max) {
 		zPosition -= stepLength;
 	}
 }

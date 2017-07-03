@@ -25,11 +25,11 @@ Playfield::Playfield()
 		if ((i+1) % int(fieldSize / tileSize) == 0)
 		{
 			xPos = 0.0;
-			zPos += tileSize;
+			zPos += tileSize+0.1;
 		}
 		else
 		{
-			xPos += tileSize;
+			xPos += tileSize+0.1;
 		}
 		std::cout << "tilePos:" << tiles[i].xPosition << "; " << tiles[i].zPosition << std::endl;
 	}
@@ -42,15 +42,18 @@ Playfield::~Playfield()
 
 float Playfield::getFieldSize()
 {
-	return fieldSize;
+	return fieldSize / 2;
 }
 
 void Playfield::drawPlayfield(MVPHandler mvp, GLuint programID) {
 	//std::cout << "tilesSize:" << tiles.size() << std::endl;
+	glm::mat4 Save = mvp.getModel();
+	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(-fieldSize/2, 0, -fieldSize/2)));
 	for each (PlayfieldTile tile in tiles)
 	{
 		tile.drawTile(mvp);
 	}
+	mvp.setModel(Save);
 
 
 	/*
