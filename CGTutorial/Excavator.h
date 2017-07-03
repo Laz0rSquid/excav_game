@@ -13,6 +13,11 @@ public:
 	float getOrientation();
 	
 	void drawExcavator(MVPHandler mvp);
+	void drawBaseBody(MVPHandler mvp);
+	void drawCabin(MVPHandler mvp);
+	void drawBaseArm(MVPHandler mvp);
+	void drawOtherArm(MVPHandler mvp);
+	void drawShovel(MVPHandler mvp);
 	void moveBodyLeft(float max, float stepLength);
 	void moveBodyRight(float max, float stepLength);
 	void moveBodyUp(float max, float stepLength);
@@ -21,11 +26,6 @@ public:
 	void bendBaseJointUp();
 	void rotateBodyCounterClockwise(float stepLength);
 	void rotateBodyClockwise(float stepLength);
-	//void rotateBaseJointClockwise();
-	//void rotateBaseJointCounterClockwise();
-	void drawBaseArm(MVPHandler mvp);
-	void drawOtherArm(MVPHandler mvp);
-	void drawShovel(MVPHandler mvp);
 	
 private:
 	float xPosition;
