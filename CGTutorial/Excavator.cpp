@@ -89,8 +89,17 @@ void Excavator::drawBaseArm(MVPHandler mvp, float length)
 	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(length * 0.1, length * 0.7, length * 0.1)));
 	mvp.sendMVP();
 	drawCube();
-	
 
+	mvp.setModel(Save);
+	//
+	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(0.0, modelSize, 0.0)));
+	//mvp.setModel(glm::rotate(mvp.getModel(), baseJointRotationXZ, glm::vec3(0.0, 1.0, 0.0)));
+	mvp.setModel(glm::rotate(mvp.getModel(), baseJointBentXY, glm::vec3(1.0, 0.0, 0.0)));
+	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(0.0, length, 0.0)));
+	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(length * 0.1, length * 0.7, length * 0.1)));
+	mvp.sendMVP();
+	drawCube();
+	//
 	mvp.setModel(Save);
 }
 void Excavator::drawOtherArm(MVPHandler mvp, float length)
