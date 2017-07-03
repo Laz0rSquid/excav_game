@@ -64,6 +64,7 @@ void Excavator::drawExcavator(MVPHandler mvp)
 	//draw cabin
 	drawCabin(mvp);
 	
+	glm::mat4 Save = mvp.getModel();
 	// draw base arm
 	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(xPosition, modelSize, zPosition)));
 	mvp.setModel(glm::rotate(mvp.getModel(), orientation, glm::vec3(0.0, 1.0, 0.0)));
@@ -76,7 +77,7 @@ void Excavator::drawExcavator(MVPHandler mvp)
 	drawOtherArm(mvp);
 	// draw "shovel"
 	drawShovel(mvp);
-
+	mvp.setModel(Save);
 }
 
 void Excavator::drawBaseBody(MVPHandler mvp)

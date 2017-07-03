@@ -33,7 +33,7 @@ void PlayfieldTile::drawTile(MVPHandler mvp) {
 	glm::mat4 Save = mvp.getModel();
 
 	// plane
-	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(xPosition, tileSize, zPosition)));
+	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(xPosition, 0, zPosition)));
 	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(tileSize, 0.0, tileSize)));
 	mvp.sendMVP();
 	drawCube();

@@ -74,7 +74,10 @@ int updates = 0;
 int keyPressed;
 
 float startOrientation;
+
 float endOrientation;
+
+float zoomLevel = 0.5;
 
 void setAnimationActive(bool status, int key)
 {
@@ -118,6 +121,26 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		break;
 	case GLFW_KEY_DOWN:
 		excavator.bendBaseJointUp();
+		break;
+	case GLFW_KEY_U:
+		if (zoomLevel > 0.1)
+		{
+			zoomLevel -= 0.05;
+		}
+		else
+		{
+			zoomLevel = 0.1;
+		}
+		break;
+	case GLFW_KEY_J:
+		if (zoomLevel < 1.0)
+		{
+			zoomLevel += 0.05;
+		}
+		else
+		{
+			zoomLevel = 1.0;
+		}
 		break;
 	default:
 		break;
@@ -353,12 +376,16 @@ int main(void)
 		MVP.setDefaultMVP();
 		
 		// camera position
+		
+		/*
 		glm::mat4 Save = MVP.getModel();
-		MVP.setModel(glm::translate(MVP.getModel(), glm::vec3(1.5, 0.0, 0.0)));
+		MVP.setModel(glm::translate(MVP.getModel(), glm::vec3(5.5, 0.0, 0.0)));
 		MVP.setModel(Save);
-		MVP.setModel(glm::scale(MVP.getModel(), glm::vec3(0.5, 0.5, 0.5)));
+		*/
+		MVP.setModel(glm::scale(MVP.getModel(), glm::vec3(zoomLevel, zoomLevel, zoomLevel)));
 		MVP.sendMVP();
 		
+
 		// draw playfield
 		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 2);
 		playfield.drawPlayfield(MVP, programID);

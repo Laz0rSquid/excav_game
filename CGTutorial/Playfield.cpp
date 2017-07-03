@@ -7,7 +7,7 @@
 
 Playfield::Playfield()
 {
-	fieldSize = 6.0;
+	fieldSize = 14.0;
 	tileSize = 2.0;
 	tileNumber = pow(fieldSize / tileSize, 2);
 	tiles.resize(tileNumber);
