@@ -88,6 +88,12 @@ void Excavator::drawExcavator(MVPHandler mvp)
 	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(0.0, armMoveLength + 0.4, 0.0)));
 	drawOtherArm(mvp);
 	// draw "shovel"
+	mvp.setModel(glm::rotate(mvp.getModel(), secondJoint, glm::vec3(1.0, 0.0, 0.0)));
+	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(0.0, armMoveLength, 0.0)));
+	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(0.4, 0.4, 0.4)));
+	mvp.sendMVP();
+	drawSphere(10, 10);
+
 }
 
 void Excavator::drawBaseArm(MVPHandler mvp)
