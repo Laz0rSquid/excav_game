@@ -13,7 +13,7 @@ using namespace glm;
 class MVPHandler
 {
 public:
-	MVPHandler(GLuint pid);
+	MVPHandler(GLuint pid, float zoomLevel);
 	~MVPHandler();
 
 private:
@@ -24,7 +24,7 @@ private:
 
 public:
 	void sendMVP();
-	void setDefaultMVP();
+	void setDefaultMVP(float zoomLevel);
 	glm::mat4 getModel();
 	void setModel(glm::mat4 m);
 	void setPID(GLuint pid);

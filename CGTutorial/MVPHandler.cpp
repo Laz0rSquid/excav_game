@@ -11,10 +11,10 @@ using namespace glm;
 #include <GLFW/glfw3.h>
 
 
-MVPHandler::MVPHandler(GLuint pid)
+MVPHandler::MVPHandler(GLuint pid, float zoomLevel)
 {
 	programID = pid;
-	setDefaultMVP();
+	setDefaultMVP(zoomLevel);
 }
 
 
@@ -34,13 +34,13 @@ void MVPHandler::sendMVP()
 	glUniformMatrix4fv(glGetUniformLocation(programID, "P"), 1, GL_FALSE, &Projection[0][0]);
 }
 
-void MVPHandler::setDefaultMVP()
+void MVPHandler::setDefaultMVP(float zoomLevel)
 {
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
 	Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
 
 	// Camera matrix
-	View = glm::lookAt(glm::vec3(3, 6, -8), // Camera is at (0,0,-5), in World Space
+	View = glm::lookAt(glm::vec3(zoomLevel * 3, zoomLevel * 6, zoomLevel *  -8), // Camera is at (0,0,-5), in World Space
 		glm::vec3(0, 0, 0),  // and looks at the origin
 		glm::vec3(0, 1, 0)); // Head is up (set to 0,-1,0 to look upside-down)
 

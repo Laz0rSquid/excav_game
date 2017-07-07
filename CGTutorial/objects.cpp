@@ -79,6 +79,7 @@ static void createCube()
 {
 	GLuint vertexbuffer;
 	GLuint colorbuffer;
+	GLuint normalbuffer;
 	
 	glGenVertexArrays(1, &VertexArrayIDSolidCube);
 	glBindVertexArray(VertexArrayIDSolidCube);
@@ -124,6 +125,27 @@ static void createCube()
 	glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
 
+	static const GLfloat g_normal_buffer_data[] = {
+		-1.0f,0.0f,0.0f, -1.0f,0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f,0.0f, 0.0f,0.0f,-1.0f, 0.0f, 0.0f,-1.0f,
+		0.0f,-1.0f, 0.0f, 0.0f,-1.0f, 0.0f,  0.0f,-1.0f,0.0f,
+		0.0f,0.0f,-1.0f,  0.0f,0.0f,-1.0f, 0.0f,0.0f,-1.0f,
+		-1.0f,0.0f,0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f,0.0f,
+		0.0f,-1.0f, 0.0f, 0.0f,-1.0f, 0.0f, 0.0f,-1.0f,0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,0.0f, 1.0f,  0.0f,0.0f, 1.0f,
+		1.0f, 0.0f, 0.0f,  1.0f,0.0f,0.0f,  1.0f, 0.0f,0.0f,
+		1.0f,0.0f,0.0f,  1.0f, 0.0f, 0.0f,  1.0f,0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,  0.0f, 1.0f,0.0f, 0.0f, 1.0f,0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f, 1.0f,0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,  0.0f,0.0f, 1.0f
+	};
+
+	glGenBuffers(1, &normalbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(g_normal_buffer_data), g_normal_buffer_data, GL_STATIC_DRAW);
+
+
+
 	glEnableVertexAttribArray(0); // Kein Disable ausführen !
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	glVertexAttribPointer(
@@ -146,7 +168,19 @@ static void createCube()
 			0,                                // stride
 			(void*)0                          // array buffer offset
 	);
-	
+
+	// normals
+	glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+	glEnableVertexAttribArray(2); // Kein Disable ausführen !
+	glVertexAttribPointer(
+		2,                                // attribute. No particular reason for 2, but must match the layout in the shader.
+		3,                                // size
+		GL_FLOAT,                         // type
+		GL_FALSE,                         // normalized?
+		0,                                // stride
+		(void*)0                          // array buffer offset
+	);
+
 	glBindVertexArray(0);
 }
 

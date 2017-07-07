@@ -47,7 +47,9 @@ Excavator excavator;
 
 GLuint programID;
 
-MVPHandler MVP(programID);
+float zoomLevel = 1.0;
+
+MVPHandler MVP(programID, zoomLevel);
 
 Playfield playfield;
 
@@ -77,7 +79,7 @@ float startOrientation;
 
 float endOrientation;
 
-float zoomLevel = 0.5;
+
 
 bool moveDown;
 
@@ -133,13 +135,13 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		}
 		break;
 	case GLFW_KEY_DOWN:
-		if (zoomLevel < 1.0)
+		if (zoomLevel < 2.0)
 		{
 			zoomLevel += 0.05;
 		}
 		else
 		{
-			zoomLevel = 1.0;
+			zoomLevel = 2.0;
 		}
 		break;
 	default:
@@ -167,14 +169,8 @@ void playAnimations() {
 		endOrientation = startOrientation + 90;
 	}
 
-	/*
-	std::cout << "startOrientation: " << startOrientation << std::endl;
-	std::cout << "endOrientation: " << endOrientation << std::endl;
-	*/
-
 	// - Only update at 60 frames / s
 	while (deltaTime >= 1.0) {
-		//std::cout << "animationActive: " << animationActive << std::endl;
 		if (animationActive)
 		{
 			switch (keyPressed)
@@ -230,7 +226,6 @@ void playAnimations() {
 				animationDuration = 0.5;
 				animationDistance = excavator.getMaxBaseAngle() -  excavator.getMinbaseAngle();
 				stepLength = (animationDistance / (animationDuration * 60)) * 2;
-				std::cout << "baseJointAngle = " << excavator.getBaseJointAngle() << std::endl;
 				if (moveDown && excavator.getBaseJointAngle() < excavator.getMaxBaseAngle())
 				{
 					excavator.bendBaseJointDown(stepLength);
@@ -247,13 +242,11 @@ void playAnimations() {
 			default:
 				break;
 			}
-			//excavator.moveBodyUp(playfield.getFieldSize(), stepLength);   // - Update function
+			
 			if (nowTime - animationStartTime >= animationDuration) {
-				//std::cout << "timer 3sec: true" << std::endl;
 				setAnimationActive(false, NULL);
 			}
 		}
-		//excavator.moveBodyUp(playfield.getFieldSize());   // - Update function
 		updates++;
 		deltaTime--;
 	}
@@ -264,7 +257,6 @@ void playAnimations() {
 	// - Reset after one second
 	if (glfwGetTime() - timer > 1.0) {
 		timer++;
-		//std::cout << "FPS: " << frames << " Updates:" << updates << std::endl;
 		updates = 0, frames = 0;
 	}
 	excavator.drawExcavator(MVP);
@@ -333,13 +325,13 @@ int main(void)
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec2> uvs;
 	std::vector<glm::vec3> normals;
-	bool res = loadOBJ("teapot.obj", vertices, uvs, normals);
+	bool res = loadOBJ("dragon.obj", vertices, uvs, normals);
 
 	// Jedes Objekt eigenem VAO zuordnen, damit mehrere Objekte moeglich sind
 	// VAOs sind Container fuer mehrere Buffer, die zusammen gesetzt werden sollen.
-	GLuint VertexArrayIDTeapot;
-	glGenVertexArrays(1, &VertexArrayIDTeapot);
-	glBindVertexArray(VertexArrayIDTeapot);
+	GLuint VertexArrayIDCoin;
+	glGenVertexArrays(1, &VertexArrayIDCoin);
+	glBindVertexArray(VertexArrayIDCoin);
 
 	// Ein ArrayBuffer speichert Daten zu Eckpunkten (hier xyz bzw. Position)
 	GLuint vertexbuffer;
@@ -364,7 +356,15 @@ int main(void)
 	glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
 	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
 	glEnableVertexAttribArray(2); // siehe layout im vertex shader 
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+	glVertexAttribPointer(
+			2,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
+	);
 
 	// texture buffer
 	GLuint uvbuffer; // Hier alles analog für Texturkoordinaten in location == 1 (2 floats u und v!)
@@ -392,16 +392,22 @@ int main(void)
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-		MVP.setDefaultMVP();
-		
-		// camera position
+		MVP.setDefaultMVP(zoomLevel);
 		
 		/*
+		// draws coin - scale, send, draw
 		glm::mat4 Save = MVP.getModel();
-		MVP.setModel(glm::translate(MVP.getModel(), glm::vec3(5.5, 0.0, 0.0)));
+		MVP.setModel(glm::scale(MVP.getModel(), glm::vec3(1.0, 1.0, 1.0)));
+		MVP.sendMVP();
+
+		glBindVertexArray(VertexArrayIDCoin);
+		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+
+		//
 		MVP.setModel(Save);
 		*/
-		MVP.setModel(glm::scale(MVP.getModel(), glm::vec3(zoomLevel, zoomLevel, zoomLevel)));
+		
+		MVP.setModel(glm::scale(MVP.getModel(), glm::vec3(0.5, 0.5, 0.5)));
 		MVP.sendMVP();
 		
 
@@ -418,7 +424,7 @@ int main(void)
 		
 		excavator.drawExcavator(MVP);
 		// lamp position
-		glm::vec4 lightPos = MVP.getModel() * glm::vec4(0, 10.9, 5.0, 1);
+		glm::vec4 lightPos = MVP.getModel() * glm::vec4(0, 10.0, 0.0, 1.0);
 		glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
 		
 		// Swap buffers
