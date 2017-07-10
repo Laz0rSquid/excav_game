@@ -233,7 +233,6 @@ void playAnimations() {
 				animationDuration = 0.3;
 				animationDistance = 90.0;
 				stepLength = animationDistance / (animationDuration * 60);
-				std::cout << "orientation " << excavator.getOrientation() << std::endl;
 				if (startOrientation < endOrientation)
 				{
 					excavator.rotateBodyCounterClockwise(stepLength);
@@ -244,7 +243,6 @@ void playAnimations() {
 				animationDuration = 0.3;
 				animationDistance = 90.0;
 				stepLength = animationDistance / (animationDuration * 60);
-				std::cout << "orientation " << excavator.getOrientation() << std::endl;
 				if (startOrientation < endOrientation)
 				{
 					excavator.rotateBodyClockwise(stepLength);
@@ -345,7 +343,6 @@ int main(void)
 	glDepthFunc(GL_LESS);
 
 	// Create and compile our GLSL program from the shaders
-	// programID = LoadShaders("TransformVertexShader.vertexshader", "ColorFragmentShader.fragmentshader");
 	programID = LoadShaders("StandardShading.vertexshader", "StandardShading.fragmentshader");
 	MVP.setPID(programID);
 	
@@ -408,6 +405,7 @@ int main(void)
 	GLuint RobotTexture = loadBMP_custom("robot_texture.bmp");
 	GLuint GrassTexture = loadBMP_custom("GrasTextureAlternative.bmp");
 	GLuint ExcavationTexture = loadBMP_custom("digged_up.bmp");
+	GLuint CoinTexture = loadBMP_custom("coin_texture.bmp");
 
 	// Bind our texture in Texture Unit 0
 	glActiveTexture(GL_TEXTURE0 + 1);
@@ -416,6 +414,8 @@ int main(void)
 	glBindTexture(GL_TEXTURE_2D, GrassTexture);
 	glActiveTexture(GL_TEXTURE0 + 3);
 	glBindTexture(GL_TEXTURE_2D, ExcavationTexture);
+	glActiveTexture(GL_TEXTURE0 + 4);
+	glBindTexture(GL_TEXTURE_2D, CoinTexture);
 
 
 	// Eventloop
@@ -445,10 +445,7 @@ int main(void)
 
 		// draw playfield
 		glm::mat4 Save = MVP.getModel();
-		/*
-		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 2);
-		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 3);
-		*/
+		
 		playfield.drawPlayfield(MVP, programID);
 		MVP.setModel(Save);
 

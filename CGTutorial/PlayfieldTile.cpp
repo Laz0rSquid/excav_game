@@ -7,6 +7,8 @@ PlayfieldTile::PlayfieldTile()
 	hasTreasure = false;
 	hasExcavator = false;
 	hasShovel = false;
+	treasureAlreadyFound = false;
+	animationAlreadyPlayed = false;
 }
 
 /*

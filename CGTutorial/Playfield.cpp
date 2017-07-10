@@ -83,10 +83,11 @@ void Playfield::drawPlayfield(MVPHandler mvp, GLuint programID) {
 	{
 		for (int j = 0; j < tileSideNumber; j++)
 		{
-			if (tiles[i][j].isExcavated) {
+			if (tiles[i][j].treasureAlreadyFound) {
+				glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 4);
+			} else if (tiles[i][j].isExcavated) {
 				glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 3);
-			}
-			else {
+			} else {
 				glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 2);
 			}
 			tiles[i][j].drawTile(mvp);
@@ -184,5 +185,10 @@ void Playfield::dig()
 {
 	if ((shovelPos[0] >= 0) && (shovelPos[0] <= 6) && (shovelPos[1] >= 0) && (shovelPos[1] <= 6)) {
 		tiles[shovelPos[0]][shovelPos[1]].isExcavated = true;
+		if (tiles[shovelPos[0]][shovelPos[1]].hasTreasure)
+		{
+			tiles[shovelPos[0]][shovelPos[1]].treasureAlreadyFound = true;
+			//std::cout << "Treasure found!" << std::endl;
+		}
 	}
 }
