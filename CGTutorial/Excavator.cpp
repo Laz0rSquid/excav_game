@@ -49,7 +49,7 @@ Excavator::Excavator()
 	armLength = 2;
 	armPieceLength = armLength * 0.7;
 	armMoveLength = armLength * 1.4;
-	std::cout << "armMoveLength: " << armMoveLength << std::endl;
+	//std::cout << "armMoveLength: " << armMoveLength << std::endl;
 
 	armWidth = armLength * 0.1;
 }
@@ -176,25 +176,25 @@ float Excavator::getOrientation()
 // Body movement
 void Excavator::moveBodyLeft(float max, float stepLength)
 {
-	if (xPosition < max - 2*modelSize) {
+	if (xPosition < max - 1) {
 		xPosition += stepLength;
 	}
 }
 void Excavator::moveBodyRight(float max, float stepLength)
 {
-	if (xPosition > -max) {
+	if (xPosition > -max + 1) {
 		xPosition -= stepLength;
 	}
 }
 void Excavator::moveBodyUp(float max, float stepLength)
 {
-	if (zPosition < max - 2*modelSize) {
+	if (zPosition < max - 1) {
 		zPosition += stepLength;
 	}
 }
 void Excavator::moveBodyDown(float max, float stepLength)
 {
-	if (zPosition > -max) {
+	if (zPosition > -max + 1) {
 		zPosition -= stepLength;
 	}
 }

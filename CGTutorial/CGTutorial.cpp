@@ -79,7 +79,9 @@ float startOrientation;
 
 float endOrientation;
 
+float startPos;
 
+float endPos;
 
 bool moveDown;
 
@@ -167,6 +169,8 @@ void playAnimations() {
 	{
 		startOrientation = abs(excavator.getOrientation());
 		endOrientation = startOrientation + 90;
+		startPos = 0;
+		//endPos = 2;
 	}
 
 	// - Only update at 60 frames / s
@@ -179,25 +183,41 @@ void playAnimations() {
 				animationDuration = 0.5;
 				animationDistance = 2.0;
 				stepLength = animationDistance / (animationDuration * 60);
-				excavator.moveBodyUp(playfield.getFieldSize(), stepLength);   // - Update function
+				if (startPos < animationDistance)
+				{
+					excavator.moveBodyUp(playfield.getFieldSize(), stepLength);   // - Update function
+				}
+				startPos += stepLength;
 				break;
 			case GLFW_KEY_S:
 				animationDuration = 0.5;
 				animationDistance = 2.0;
 				stepLength = animationDistance / (animationDuration * 60);
-				excavator.moveBodyDown(playfield.getFieldSize(), stepLength);
+				if (startPos < animationDistance)
+				{
+					excavator.moveBodyDown(playfield.getFieldSize(), stepLength);
+				}
+				startPos += stepLength;
 				break;
 			case GLFW_KEY_A:
 				animationDuration = 0.5;
 				animationDistance = 2.0;
 				stepLength = animationDistance / (animationDuration * 60);
-				excavator.moveBodyLeft(playfield.getFieldSize(), stepLength);
+				if (startPos < animationDistance)
+				{
+					excavator.moveBodyLeft(playfield.getFieldSize(), stepLength);
+				}
+				startPos += stepLength;
 				break;
 			case GLFW_KEY_D:
 				animationDuration = 0.5;
 				animationDistance = 2.0;
 				stepLength = animationDistance / (animationDuration * 60);
-				excavator.moveBodyRight(playfield.getFieldSize(), stepLength);
+				if (startPos < animationDistance)
+				{
+					excavator.moveBodyRight(playfield.getFieldSize(), stepLength);
+				}
+				startPos += stepLength;
 				break;
 			case GLFW_KEY_Q:
 				animationDuration = 0.3;
@@ -412,9 +432,11 @@ int main(void)
 		
 
 		// draw playfield
+		glm::mat4 Save = MVP.getModel();
 		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 2);
 		playfield.drawPlayfield(MVP, programID);
-		
+		MVP.setModel(Save);
+
 		// draw excavator
 		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 1);
 

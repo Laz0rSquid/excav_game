@@ -11,8 +11,8 @@ Playfield::Playfield()
 	tileSize = 2.0;
 	tileNumber = pow(fieldSize / tileSize, 2);
 	tiles.resize(tileNumber);
-	std::cout << "tilesNumber:" << tileNumber << std::endl;
-	std::cout << "tilesSize:" << tiles.size() << std::endl;
+	//std::cout << "tilesNumber:" << tileNumber << std::endl;
+	//std::cout << "tilesSize:" << tiles.size() << std::endl;
 
 	float xPos = 0.0;
 	float zPos = 0.0;
@@ -21,17 +21,17 @@ Playfield::Playfield()
 	{
 		tiles[i].setSize(tileSize);
 		tiles[i].setPosition(xPos, zPos);
-		std::cout << "modulo:" << (i+1) % int(fieldSize / tileSize) << std::endl;
+		//std::cout << "modulo:" << (i+1) % int(fieldSize / tileSize) << std::endl;
 		if ((i+1) % int(fieldSize / tileSize) == 0)
 		{
 			xPos = 0.0;
-			zPos += tileSize+0.1;
+			zPos += tileSize;
 		}
 		else
 		{
-			xPos += tileSize+0.1;
+			xPos += tileSize;
 		}
-		std::cout << "tilePos:" << tiles[i].xPosition << "; " << tiles[i].zPosition << std::endl;
+		//std::cout << "tilePos:" << tiles[i].xPosition << "; " << tiles[i].zPosition << std::endl;
 	}
 }
 
@@ -48,38 +48,10 @@ float Playfield::getFieldSize()
 void Playfield::drawPlayfield(MVPHandler mvp, GLuint programID) {
 	//std::cout << "tilesSize:" << tiles.size() << std::endl;
 	glm::mat4 Save = mvp.getModel();
-	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(-fieldSize/2, 0, -fieldSize/2)));
+	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(-fieldSize/2 + 1., 0, -fieldSize/2 + 1.)));
 	for each (PlayfieldTile tile in tiles)
 	{
 		tile.drawTile(mvp);
 	}
 	mvp.setModel(Save);
-
-
-	/*
-	glm::mat4 Save = mvp.getModel();
-
-	// plane
-	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(fieldSize, 0.0, fieldSize)));
-	mvp.sendMVP();
-	drawCube();
-	//mvp.setModel(Save);
-
-	for (int i = 0; i < tileNumber; i++)
-	{
-		if (i % 2)
-		{
-			glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 2);
-			tiles[i].drawTile(mvp);
-		}
-		else
-		{
-			glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 1);
-			tiles[i].drawTile(mvp);
-		}
-	}
-
-	Save = mvp.getModel();
-	*/
-
 }
