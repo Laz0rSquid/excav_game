@@ -133,6 +133,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		case GLFW_KEY_SPACE:
 			moveDown = true;
 			setAnimationActive(true, key);
+			playfield.dig();
 			break;
 		case GLFW_KEY_UP:
 			if (zoomLevel > 0.1)

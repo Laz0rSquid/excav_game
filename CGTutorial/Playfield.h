@@ -21,5 +21,7 @@ public:
 
 	std::vector <int> shovelPos;
 	void turnShovel(int orientation, int turn);
+
+	void dig();
 };
 

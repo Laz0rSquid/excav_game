@@ -83,7 +83,7 @@ void Playfield::drawPlayfield(MVPHandler mvp, GLuint programID) {
 	{
 		for (int j = 0; j < tileSideNumber; j++)
 		{
-			if (tiles[i][j].isExcavated || tiles[i][j].hasShovel) {
+			if (tiles[i][j].isExcavated) {
 				glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 3);
 			}
 			else {
@@ -177,5 +177,12 @@ void Playfield::turnShovel(int orientation, int turn)
 	{
 		shovelPos[0] = excPos[0];
 		shovelPos[1] = excPos[1] - 1;
+	}
+}
+
+void Playfield::dig()
+{
+	if ((shovelPos[0] >= 0) && (shovelPos[0] <= 6) && (shovelPos[1] >= 0) && (shovelPos[1] <= 6)) {
+		tiles[shovelPos[0]][shovelPos[1]].isExcavated = true;
 	}
 }
