@@ -10,7 +10,8 @@ public:
 	float fieldSize;
 	int tileNumber;
 	float tileSize;
-	std::vector<PlayfieldTile> tiles;
+	float tileSideNumber;
+	std::vector <std::vector<PlayfieldTile> > tiles;
 
 	float getFieldSize();
 	void drawPlayfield(MVPHandler mvp, GLuint programID);
