@@ -4,12 +4,16 @@ class PlayfieldTile
 {
 public:
 	PlayfieldTile();
-	PlayfieldTile(float size, float xPos, float zPos);
 	~PlayfieldTile();
 
 	float tileSize;
 	float xPosition;
 	float zPosition;
+
+	bool isExcavated;
+	bool hasTreasure;
+	bool hasExcavator;
+	bool hasShovel;
 
 	void setSize(float size);
 	void setPosition(float xPos, float zPos);

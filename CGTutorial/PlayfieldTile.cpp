@@ -3,6 +3,10 @@
 
 PlayfieldTile::PlayfieldTile()
 {
+	isExcavated = false;
+	hasTreasure = false;
+	hasExcavator = false;
+	hasShovel = false;
 }
 
 /*

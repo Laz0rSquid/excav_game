@@ -99,55 +99,64 @@ void setAnimationActive(bool status, int key)
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	switch (key)
-	{
-	case GLFW_KEY_ESCAPE:
-		glfwSetWindowShouldClose(window, GL_TRUE);
-		break;
-	case GLFW_KEY_W:
-		setAnimationActive(true, key);
-		break;
-	case GLFW_KEY_S:
-		setAnimationActive(true, key);
-		break;
-	case GLFW_KEY_A:
-		setAnimationActive(true, key);
-		break;
-	case GLFW_KEY_D:
-		setAnimationActive(true, key);
-		break;
-	case GLFW_KEY_Q:
-		setAnimationActive(true, key);
-		break;
-	case GLFW_KEY_E:
-		setAnimationActive(true, key);
-		break;
-	case GLFW_KEY_SPACE:
-		moveDown = true;
-		setAnimationActive(true, key);
-		break;
-	case GLFW_KEY_UP:
-		if (zoomLevel > 0.1)
+	if (!animationActive) {
+		switch (key)
 		{
-			zoomLevel -= 0.05;
+		case GLFW_KEY_ESCAPE:
+			glfwSetWindowShouldClose(window, GL_TRUE);
+			break;
+		case GLFW_KEY_W:
+			setAnimationActive(true, key);
+			playfield.changeExcPos(1, 0, excavator.getOrientation());
+			break;
+		case GLFW_KEY_S:
+			setAnimationActive(true, key);
+			playfield.changeExcPos(-1, 0, excavator.getOrientation());
+			break;
+		case GLFW_KEY_A:
+			setAnimationActive(true, key);
+			playfield.changeExcPos(0, 1, excavator.getOrientation());
+			break;
+		case GLFW_KEY_D:
+			setAnimationActive(true, key);
+			playfield.changeExcPos(0, -1, excavator.getOrientation());
+			break;
+		case GLFW_KEY_Q:
+
+			playfield.turnShovel(excavator.getOrientation(), 90);
+			setAnimationActive(true, key);
+			break;
+		case GLFW_KEY_E:
+			playfield.turnShovel(excavator.getOrientation(), -90);
+			setAnimationActive(true, key);
+			break;
+		case GLFW_KEY_SPACE:
+			moveDown = true;
+			setAnimationActive(true, key);
+			break;
+		case GLFW_KEY_UP:
+			if (zoomLevel > 0.1)
+			{
+				zoomLevel -= 0.05;
+			}
+			else
+			{
+				zoomLevel = 0.1;
+			}
+			break;
+		case GLFW_KEY_DOWN:
+			if (zoomLevel < 2.0)
+			{
+				zoomLevel += 0.05;
+			}
+			else
+			{
+				zoomLevel = 2.0;
+			}
+			break;
+		default:
+			break;
 		}
-		else
-		{
-			zoomLevel = 0.1;
-		}
-		break;
-	case GLFW_KEY_DOWN:
-		if (zoomLevel < 2.0)
-		{
-			zoomLevel += 0.05;
-		}
-		else
-		{
-			zoomLevel = 2.0;
-		}
-		break;
-	default:
-		break;
 	}
 }
 
@@ -223,7 +232,7 @@ void playAnimations() {
 				animationDuration = 0.3;
 				animationDistance = 90.0;
 				stepLength = animationDistance / (animationDuration * 60);
-
+				std::cout << "orientation " << excavator.getOrientation() << std::endl;
 				if (startOrientation < endOrientation)
 				{
 					excavator.rotateBodyCounterClockwise(stepLength);
@@ -234,7 +243,7 @@ void playAnimations() {
 				animationDuration = 0.3;
 				animationDistance = 90.0;
 				stepLength = animationDistance / (animationDuration * 60);
-
+				std::cout << "orientation " << excavator.getOrientation() << std::endl;
 				if (startOrientation < endOrientation)
 				{
 					excavator.rotateBodyClockwise(stepLength);
@@ -397,13 +406,15 @@ int main(void)
 	// Load the texture
 	GLuint RobotTexture = loadBMP_custom("robot_texture.bmp");
 	GLuint GrassTexture = loadBMP_custom("GrasTextureAlternative.bmp");
+	GLuint ExcavationTexture = loadBMP_custom("digged_up.bmp");
 
 	// Bind our texture in Texture Unit 0
 	glActiveTexture(GL_TEXTURE0 + 1);
 	glBindTexture(GL_TEXTURE_2D, RobotTexture);
 	glActiveTexture(GL_TEXTURE0 + 2);
 	glBindTexture(GL_TEXTURE_2D, GrassTexture);
-
+	glActiveTexture(GL_TEXTURE0 + 3);
+	glBindTexture(GL_TEXTURE_2D, ExcavationTexture);
 
 
 	// Eventloop
@@ -433,7 +444,10 @@ int main(void)
 
 		// draw playfield
 		glm::mat4 Save = MVP.getModel();
+		/*
 		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 2);
+		glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 3);
+		*/
 		playfield.drawPlayfield(MVP, programID);
 		MVP.setModel(Save);
 

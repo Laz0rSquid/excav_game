@@ -46,12 +46,12 @@ Excavator::Excavator()
 	maxBaseAngle = 60;
 	minBaseAngle = 30;
 	secondJoint = 120.0;
-	armLength = 2;
+	armLength = 1.5;
 	armPieceLength = armLength * 0.7;
 	armMoveLength = armLength * 1.4;
-	//std::cout << "armMoveLength: " << armMoveLength << std::endl;
+	
 
-	armWidth = armLength * 0.1;
+	armWidth = 0.2;
 }
 
 Excavator::~Excavator()
@@ -169,8 +169,14 @@ float Excavator::getZPos()
 
 float Excavator::getOrientation()
 {
-	
-	return fmod(orientation, 360);
+	if (fmod(orientation, 360) < 0)
+	{
+		return 360 + fmod(orientation, 360);
+	}
+	else
+	{
+		return fmod(orientation, 360);
+	}
 }
 
 // Body movement

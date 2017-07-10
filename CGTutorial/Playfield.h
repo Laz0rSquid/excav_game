@@ -8,12 +8,18 @@ public:
 	~Playfield();
 
 	float fieldSize;
+	float getFieldSize();
+	void drawPlayfield(MVPHandler mvp, GLuint programID);
+
+	std::vector <std::vector<PlayfieldTile> > tiles;
 	int tileNumber;
 	float tileSize;
 	float tileSideNumber;
-	std::vector <std::vector<PlayfieldTile> > tiles;
+	
+	std::vector <int> excPos;
+	void changeExcPos(int x, int z, int orientation);
 
-	float getFieldSize();
-	void drawPlayfield(MVPHandler mvp, GLuint programID);
+	std::vector <int> shovelPos;
+	void turnShovel(int orientation, int turn);
 };
 
