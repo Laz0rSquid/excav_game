@@ -11,15 +11,6 @@ PlayfieldTile::PlayfieldTile()
 	animationAlreadyPlayed = false;
 }
 
-/*
-PlayfieldTile::PlayfieldTile(float size, float xPos, float zPos)
-{
-	tileSize = size /2;
-	xPosition = xPos;
-	zPosition = zPos;
-}
-*/
-
 PlayfieldTile::~PlayfieldTile()
 {
 }

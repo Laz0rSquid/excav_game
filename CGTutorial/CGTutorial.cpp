@@ -53,41 +53,41 @@ MVPHandler MVP(programID, zoomLevel);
 
 Playfield playfield;
 
-bool animationActive;
+bool animationActive; // checks if animation frames are active
 
-double animationStartTime;
+double animationStartTime; // saves animation start time
 
-static double limitFPS = 1.0 / 60.0;
+static double limitFPS = 1.0 / 60.0; // sets FPS of the game to 60
 
 double lastTime = glfwGetTime(), timer = lastTime;
 
 double deltaTime = 0, nowTime = 0, startTime = 0;
 
-double animationDuration = 0.5;
+double animationDuration;
 
-float animationDistance = 2.0;
+float animationDistance;
 
 float stepLength = animationDistance / (animationDuration * 60);
 
-int frames = 0;
+int frames = 0; // counts frames
 
 int updates = 0;
 
-int keyPressed;
+int keyPressed; // saves int code of last key press
 
-float startOrientation;
+float startOrientation; // orientation of excavator at start of animation
 
-float endOrientation;
+float endOrientation; // target orientation for excavator after turn animation
 
-float startPos;
+float startPos; // start position of excavator
 
-float endPos;
+float endPos; // intended end position of excavator after move animation
 
-float coinHeight;
+float coinYPos;
 
-float coinOrientation;
+float coinOrientation; // used for spinning animation
 
-bool moveDown;
+bool moveDown; // checks whether excavator arm moves down
 
 int windowWidth = 1024;
 
@@ -277,7 +277,7 @@ void playAnimations() {
 				{
 					glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 4);
 					glm::mat4 Save = MVP.getModel();
-					MVP.setModel(glm::translate(MVP.getModel(), glm::vec3(playfield.lastTresureX - 6, coinHeight, playfield.lastTresureZ - 6)));
+					MVP.setModel(glm::translate(MVP.getModel(), glm::vec3(playfield.lastTresureX - 6, coinYPos, playfield.lastTresureZ - 6)));
 					MVP.setModel(glm::rotate(MVP.getModel(), coinOrientation, glm::vec3(0.0, 1, 0.0)));
 					MVP.setModel(glm::scale(MVP.getModel(), glm::vec3(1., 1., .1)));
 
@@ -286,7 +286,7 @@ void playAnimations() {
 
 					MVP.setModel(Save);
 					glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 1);
-					coinHeight += 0.1;
+					coinYPos += 0.1;
 					coinOrientation = fmod((coinOrientation + 24), 360);
 				}
 				break;
@@ -373,10 +373,11 @@ int main(void)
 	// Shader auch benutzen !
 	glUseProgram(programID);
 
+	
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec2> uvs;
 	std::vector<glm::vec3> normals;
-	bool res = loadOBJ("dragon.obj", vertices, uvs, normals);
+	bool res = loadOBJ("cube.obj", vertices, uvs, normals);
 
 	// Jedes Objekt eigenem VAO zuordnen, damit mehrere Objekte moeglich sind
 	// VAOs sind Container fuer mehrere Buffer, die zusammen gesetzt werden sollen.
@@ -400,7 +401,6 @@ int main(void)
 		GL_FALSE, // Fixedpoint data normalisieren ?
 		0, // Eckpunkte direkt hintereinander gespeichert
 		(void*)0); // abweichender Datenanfang ? 
-
 	// normal buffer
 	GLuint normalbuffer; // Hier alles analog für Normalen in location == 2
 	glGenBuffers(1, &normalbuffer);
@@ -450,19 +450,6 @@ int main(void)
 
 		MVP.setDefaultMVP(zoomLevel);
 		
-		/*
-		// draws coin - scale, send, draw
-		glm::mat4 Save = MVP.getModel();
-		MVP.setModel(glm::scale(MVP.getModel(), glm::vec3(1.0, 1.0, 1.0)));
-		MVP.sendMVP();
-
-		glBindVertexArray(VertexArrayIDCoin);
-		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-
-		//
-		MVP.setModel(Save);
-		*/
-		
 		MVP.setModel(glm::scale(MVP.getModel(), glm::vec3(0.5, 0.5, 0.5)));
 		MVP.sendMVP();
 		
@@ -481,14 +468,14 @@ int main(void)
 		playAnimations();
 		if (!animationActive)
 		{
-			coinHeight = 1;
+			coinYPos = 1;
 			coinOrientation = 0;
 		}
 		if (playfield.newTreasureFound)
 		{
 			glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 4);
 			glm::mat4 Save = MVP.getModel();
-			MVP.setModel(glm::translate(MVP.getModel(), glm::vec3(playfield.lastTresureX - 6, coinHeight, playfield.lastTresureZ - 6)));
+			MVP.setModel(glm::translate(MVP.getModel(), glm::vec3(playfield.lastTresureX - 6, coinYPos, playfield.lastTresureZ - 6)));
 			MVP.setModel(glm::rotate(MVP.getModel(), coinOrientation, glm::vec3(0.0, 1, 0.0)));
 			MVP.setModel(glm::scale(MVP.getModel(), glm::vec3(1., 1., .1)));
 
@@ -497,18 +484,19 @@ int main(void)
 
 			MVP.setModel(Save);
 			glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 1);
-			coinHeight += 0.05;
+			coinYPos += 0.05;
 			coinOrientation = fmod((coinOrientation + 2), 360);
 		}
 		
 		excavator.drawExcavator(MVP);
 		// lamp position
+		Save = MVP.getModel();
 		glm::vec4 lightPos = MVP.getModel() * glm::vec4(0, 10.0, 0.0, 1.0);
 		glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
-
+		MVP.setModel(Save);
 
 		
-
+		
 
 
 		
