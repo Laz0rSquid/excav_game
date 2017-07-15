@@ -15,7 +15,7 @@ public:
 	int tileNumber;
 	float tileSize;
 	float tileSideNumber;
-	
+
 	std::vector <int> excPos;
 	void changeExcPos(int x, int z, int orientation);
 
@@ -23,5 +23,9 @@ public:
 	void turnShovel(int orientation, int turn);
 
 	void dig();
+
+	bool newTreasureFound;
+	float lastTresureX;
+	float lastTresureZ;
 };
 

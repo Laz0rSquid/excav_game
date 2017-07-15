@@ -83,7 +83,15 @@ float startPos;
 
 float endPos;
 
+float coinHeight;
+
+float coinOrientation;
+
 bool moveDown;
+
+int windowWidth = 1024;
+
+int windowHeight = 768;
 
 void setAnimationActive(bool status, int key)
 {
@@ -180,6 +188,7 @@ void playAnimations() {
 		startOrientation = abs(excavator.getOrientation());
 		endOrientation = startOrientation + 90;
 		startPos = 0;
+		
 		//endPos = 2;
 	}
 
@@ -250,7 +259,6 @@ void playAnimations() {
 				startOrientation += stepLength;
 				break;
 			case GLFW_KEY_SPACE:
-				
 				animationDuration = 0.5;
 				animationDistance = excavator.getMaxBaseAngle() -  excavator.getMinbaseAngle();
 				stepLength = (animationDistance / (animationDuration * 60)) * 2;
@@ -263,8 +271,23 @@ void playAnimations() {
 				}
 				else if (!moveDown && excavator.getBaseJointAngle() > excavator.getMinbaseAngle())
 				{
-
 					excavator.bendBaseJointUp(stepLength);
+				}
+				if(playfield.newTreasureFound)
+				{
+					glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 4);
+					glm::mat4 Save = MVP.getModel();
+					MVP.setModel(glm::translate(MVP.getModel(), glm::vec3(playfield.lastTresureX - 6, coinHeight, playfield.lastTresureZ - 6)));
+					MVP.setModel(glm::rotate(MVP.getModel(), coinOrientation, glm::vec3(0.0, 1, 0.0)));
+					MVP.setModel(glm::scale(MVP.getModel(), glm::vec3(1., 1., .1)));
+
+					MVP.sendMVP();
+					drawSphere(10, 10);
+
+					MVP.setModel(Save);
+					glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 1);
+					coinHeight += 0.1;
+					coinOrientation = fmod((coinOrientation + 24), 360);
 				}
 				break;
 			default:
@@ -273,6 +296,7 @@ void playAnimations() {
 			
 			if (nowTime - animationStartTime >= animationDuration) {
 				setAnimationActive(false, NULL);
+				playfield.newTreasureFound = false;
 			}
 		}
 		updates++;
@@ -305,8 +329,8 @@ int main(void)
 
 	// Open a window and create its OpenGL context
 	// glfwWindowHint vorher aufrufen, um erforderliche Resourcen festzulegen
-	GLFWwindow* window = glfwCreateWindow(1024, // Breite
-										  768,  // Hoehe
+	GLFWwindow* window = glfwCreateWindow(windowWidth, // Breite
+										  windowHeight,  // Hoehe
 										  "CG - Tutorial", // Ueberschrift
 										  NULL,  // windowed mode
 										  NULL); // shared windoe
@@ -455,11 +479,38 @@ int main(void)
 		// - Measure time
 
 		playAnimations();
+		if (!animationActive)
+		{
+			coinHeight = 1;
+			coinOrientation = 0;
+		}
+		if (playfield.newTreasureFound)
+		{
+			glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 4);
+			glm::mat4 Save = MVP.getModel();
+			MVP.setModel(glm::translate(MVP.getModel(), glm::vec3(playfield.lastTresureX - 6, coinHeight, playfield.lastTresureZ - 6)));
+			MVP.setModel(glm::rotate(MVP.getModel(), coinOrientation, glm::vec3(0.0, 1, 0.0)));
+			MVP.setModel(glm::scale(MVP.getModel(), glm::vec3(1., 1., .1)));
+
+			MVP.sendMVP();
+			drawSphere(10, 10);
+
+			MVP.setModel(Save);
+			glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 1);
+			coinHeight += 0.05;
+			coinOrientation = fmod((coinOrientation + 2), 360);
+		}
 		
 		excavator.drawExcavator(MVP);
 		// lamp position
 		glm::vec4 lightPos = MVP.getModel() * glm::vec4(0, 10.0, 0.0, 1.0);
 		glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
+
+
+		
+
+
+
 		
 		// Swap buffers
 		glfwSwapBuffers(window);
