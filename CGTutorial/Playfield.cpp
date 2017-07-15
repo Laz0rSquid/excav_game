@@ -45,9 +45,12 @@ Playfield::Playfield()
 		}
 	}
 
-	tiles[0][3].hasTreasure = true;
-	tiles[2][1].hasTreasure = true;
-	tiles[4][5].hasTreasure = true;
+	tiles[0][1].hasTreasure = true;
+	tiles[1][5].hasTreasure = true;
+	tiles[2][2].hasTreasure = true;
+	tiles[3][5].hasTreasure = true;
+	tiles[4][0].hasTreasure = true;
+	tiles[5][4].hasTreasure = true;
 	tiles[6][6].hasTreasure = true;
 	tiles[3][3].hasExcavator = true;
 	newTreasureFound = false;
