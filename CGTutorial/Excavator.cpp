@@ -68,7 +68,7 @@ void Excavator::drawExcavator(MVPHandler mvp)
 	
 	glm::mat4 Save = mvp.getModel();
 	// draw base arm
-	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(xPosition, modelSize, zPosition)));
+	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(xPosition, 0.5*modelSize, zPosition)));
 	mvp.setModel(glm::rotate(mvp.getModel(), orientation, glm::vec3(0.0, 1.0, 0.0)));
 	
 	drawBaseArm(mvp);
@@ -85,7 +85,7 @@ void Excavator::drawExcavator(MVPHandler mvp)
 void Excavator::drawBaseBody(MVPHandler mvp)
 {
 	glm::mat4 Save = mvp.getModel();
-	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(xPosition, modelSize, zPosition)));
+	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(xPosition, 0.5*modelSize, zPosition)));
 	mvp.setModel(glm::rotate(mvp.getModel(), orientation, glm::vec3(0.0, 1.0, 0.0)));
 	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(modelSize, 0.5*modelSize, modelSize)));
 
@@ -99,7 +99,7 @@ void Excavator::drawCabin(MVPHandler mvp)
 	glm::mat4 Save = mvp.getModel();
 	mvp.setModel(glm::translate(mvp.getModel(), glm::vec3(xPosition, modelSize, zPosition)));
 	mvp.setModel(glm::rotate(mvp.getModel(), orientation, glm::vec3(0.0, 1.0, 0.0)));
-	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(0.5 * modelSize, 1.4*modelSize, 0.5 * modelSize)));
+	mvp.setModel(glm::scale(mvp.getModel(), glm::vec3(0.5 * modelSize, modelSize, 0.5 * modelSize)));
 
 	mvp.sendMVP();
 	drawCube();
